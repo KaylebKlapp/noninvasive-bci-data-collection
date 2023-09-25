@@ -43,11 +43,12 @@ print(f"analog channels: {analog_channel}")
 print(f"acceleration channels: {accel_channel}")
 #print(f"data shape: {data.shape}")
 
+name = input("File prefix: ")
+
 board.start_stream(45000)
 time.sleep(0.1)
 board.get_board_data()
 data = []
-
 
 for i in range(50):
     time.sleep(0.1)
@@ -70,6 +71,7 @@ for d in data:
     output += "\n"
 output.rstrip("\n")
 
+datetime.now
 with open("raw_data.txt", "w") as fp:
     fp.write(output)
 

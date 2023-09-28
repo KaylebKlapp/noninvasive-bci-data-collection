@@ -43,7 +43,8 @@ print(f"analog channels: {analog_channel}")
 print(f"acceleration channels: {accel_channel}")
 #print(f"data shape: {data.shape}")
 
-name = input("File prefix: ")
+__file_prefix__ = "kayleb"
+__file_suffix__ = datetime.now().strftime("%y_%m_%D_%H_%M_%S")
 
 board.start_stream(45000)
 time.sleep(0.1)
@@ -71,8 +72,7 @@ for d in data:
     output += "\n"
 output.rstrip("\n")
 
-datetime.now
-with open("raw_data.txt", "w") as fp:
+with open(f"{__file_prefix__}_{__file_suffix__}.txt", "w") as fp:
     fp.write(output)
 
 quit()

@@ -31,7 +31,7 @@ def start_window():
                 break
             elif event.type == pygame.KEYDOWN:
                 if event.key == keys[letter_index]:
-                    time_keys.append([letters[letter_index], datetime.now()])
+                    time_keys.append([letters[letter_index], int(time.time() * 1000)])
                     letter_index += 1
                     letter_index %= len(letters)
                     

@@ -41,10 +41,19 @@ print(f"eeg: {eeg_channels}")
 print(f"eeg names: {eeg_names}")
 print(f"analog channels: {analog_channel}")
 print(f"acceleration channels: {accel_channel}")
-#print(f"data shape: {data.shape}")
 
+"""
+File handling variables
+"""
+
+# preferably your name
 __file_prefix__ = "kayleb"
-__file_suffix__ = datetime.now().strftime("%y_%m_%D_%H_%M_%S")
+
+# Type of collections
+__collection_name__ = "test"
+
+# Date time string
+__file_suffix__ = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
 
 board.start_stream(45000)
 time.sleep(0.1)
@@ -54,10 +63,11 @@ data = []
 for i in range(50):
     time.sleep(0.1)
     inter_data = board.get_board_data()
-    print(inter_data.shape)
     for i in range(len(inter_data[0])):
         single_frame = [inter_data[c][i] for c in eeg_channels]
-        data.append(single_frame)
+        new_row = [int(time.time() * 10000)]
+        new_row.extend(single_frame)
+        data.append(new_row)
 
 board.stop_stream()
 
@@ -68,11 +78,9 @@ output = ""
 for d in data:
     for c in d:
         output += str(c) + ","
-    output.rstrip(",")
+    output = output.rstrip(",")
     output += "\n"
-output.rstrip("\n")
+output = output.rstrip("\n")
 
-with open(f"{__file_prefix__}_{__file_suffix__}.txt", "w") as fp:
+with open(f"{__file_prefix__}_{__collection_name__}_{__file_suffix__}.txt", "x") as fp:
     fp.write(output)
-
-quit()

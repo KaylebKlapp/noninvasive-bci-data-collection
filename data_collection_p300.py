@@ -55,23 +55,29 @@ __collection_name__ = "test"
 # Date time string
 __file_suffix__ = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
 
-board.start_stream(45000)
-time.sleep(0.1)
-board.get_board_data()
-data = []
+def start_data_stream():
+    data = []
+    try:
+        board.start_stream(45000)
+        time.sleep(0.1)
+        board.get_board_data()
 
-for i in range(50):
-    time.sleep(0.1)
-    inter_data = board.get_board_data()
-    for i in range(len(inter_data[0])):
-        single_frame = [inter_data[c][i] for c in eeg_channels]
-        new_row = [int(time.time() * 10000)]
-        new_row.extend(single_frame)
-        data.append(new_row)
+        for i in range(50):
+            time.sleep(0.1)
+            inter_data = board.get_board_data()
+            for i in range(len(inter_data[0])):
+                single_frame = [inter_data[c][i] for c in eeg_channels]
+                new_row = [int(time.time() * 10000)]
+                new_row.extend(single_frame)
+                data.append(new_row)
 
-board.stop_stream()
+        board.stop_stream()
+    except:
+        print("An error occurred in the stream.")
+    finally:
+        return data
 
-data = np.array(data)
+data = np.array(start_data_stream())
 print(data.shape)
 
 output = ""

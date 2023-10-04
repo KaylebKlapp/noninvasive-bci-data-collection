@@ -40,9 +40,11 @@ def start_window():
         screen.blit(text, (50, 50))
         pygame.display.flip();                    
 
-
-start_window()
-
-with open("test.csv", "w") as fp:
-    for input in time_keys:
-        fp.write(f"{input[0]},{input[1]}\n")
+try:
+    start_window()
+except:
+    print("An error occurred. Please double check the file.")
+finally:
+    with open("test.csv", "w") as fp:
+        for input in time_keys:
+            fp.write(f"{input[0]},{input[1]}\n")

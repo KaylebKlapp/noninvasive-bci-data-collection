@@ -1,10 +1,8 @@
-import argparse
 import time
 from datetime import datetime
 import brainflow as bf
 import numpy as np
 import pygame
-#from tkinter import *
 
 pygame.init()
 pygame.font.init()

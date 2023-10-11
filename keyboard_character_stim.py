@@ -1,10 +1,10 @@
-import pygame
-import numpy as np  
-from datetime import datetime
-import time
-import brainflow as bf
 import argparse
-
+import time
+from datetime import datetime
+import brainflow as bf
+import numpy as np
+import pygame
+from tkinter import *
 
 pygame.init()
 pygame.font.init()
@@ -13,14 +13,29 @@ font = pygame.font.SysFont("Alata", 700)
 time_keys = []
 letters = ['K', 'W', 'E']
 keys = [pygame.K_k, pygame.K_w, pygame.K_e]
+height_buffer = 0.05
+width_buffer = 0.05
 
-def render_ront(str, color = (0, 0, 0)):
-    text = font.render(str, True, (0,0,0))
+def render_ront(str, color = (255, 255, 255)):
+    text = font.render(str, True, color)
     return text
+
+def render_screen():
+    root = Tk()
+    # Get the bounds of the pygame window. Establishes window size and the
+    # size of space between the screen and the size of your screen
+    screen_width = root.winfo_screenwidth()
+    w_buffer = screen_width*width_buffer
+    screen_height = root.winfo_screenheight()
+    h_buffer = screen_height*height_buffer
+
+    # Establish the screen
+    screen = pygame.display.set_mode((screen_width-w_buffer, screen_height-h_buffer))
+    return screen
 
 def start_window():
     pygame.display.set_caption("BCI training")
-    screen = pygame.display.set_mode((550, 500))
+    screen = render_screen()
     
     letter_index = 0
     running = True;

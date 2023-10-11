@@ -40,7 +40,6 @@ def start_window():
         screen.blit(text, (50, 50))
         pygame.display.flip();                    
 
-
 try:
     start_window()
 except:

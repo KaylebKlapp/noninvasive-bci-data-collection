@@ -4,17 +4,27 @@ from datetime import datetime
 import time
 import brainflow as bf
 import argparse
-
+import random
 
 pygame.init()
 pygame.font.init()
 font = pygame.font.SysFont("Alata", 700)
+fonts = pygame.font.get_fonts()
 
 time_keys = []
-letters = ['K', 'W', 'E']
+alphabet = [chr(i) for i in range(int("A"), int("Z"))]
+nontraining_letters = alphabet
+
+training_letters = ['K', 'W', 'E']
+for let in training_letters:
+    nontraining_letters.remove(let)
+    
 keys = [pygame.K_k, pygame.K_w, pygame.K_e]
 
-def render_ront(str, color = (0, 0, 0)):
+def get_random_color():
+    return (random.randrange(256), random.randrange(256), random.randrange(256))
+
+def render_ront(str, font, color = (0, 0, 0)):
     text = font.render(str, True, (0,0,0))
     return text
 
@@ -31,12 +41,12 @@ def start_window():
                 break
             elif event.type == pygame.KEYDOWN:
                 if event.key == keys[letter_index]:
-                    time_keys.append([letters[letter_index], int(time.time() * 1000)])
+                    time_keys.append([training_letters[letter_index], int(time.time() * 1000)])
                     letter_index += 1
-                    letter_index %= len(letters)
+                    letter_index %= len(training_letters)
                     
         screen.fill((205, 205, 205))
-        text = render_ront(letters[letter_index])
+        text = render_ront(training_letters[letter_index])
         screen.blit(text, (50, 50))
         pygame.display.flip();                    
 

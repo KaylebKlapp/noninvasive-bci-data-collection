@@ -4,7 +4,7 @@ from datetime import datetime
 import brainflow as bf
 import numpy as np
 import pygame
-from tkinter import *
+#from tkinter import *
 
 pygame.init()
 pygame.font.init()
@@ -21,16 +21,8 @@ def render_ront(str, color = (255, 255, 255)):
     return text
 
 def render_screen():
-    root = Tk()
-    # Get the bounds of the pygame window. Establishes window size and the
-    # size of space between the screen and the size of your screen
-    screen_width = root.winfo_screenwidth()
-    w_buffer = screen_width*width_buffer
-    screen_height = root.winfo_screenheight()
-    h_buffer = screen_height*height_buffer
-
-    # Establish the screen
-    screen = pygame.display.set_mode((screen_width-w_buffer, screen_height-h_buffer))
+    # Sets the pygame screen to fit the entire screen
+    screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     return screen
 
 def start_window():
@@ -49,11 +41,14 @@ def start_window():
                     time_keys.append([letters[letter_index], int(time.time() * 1000)])
                     letter_index += 1
                     letter_index %= len(letters)
+
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
                     
         screen.fill((205, 205, 205))
         text = render_ront(letters[letter_index])
         screen.blit(text, (50, 50))
-        pygame.display.flip();                    
+        pygame.display.flip();         
 
 try:
     start_window()

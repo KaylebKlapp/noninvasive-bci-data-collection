@@ -25,35 +25,57 @@ def init_keyboard():
     screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
     screen.fill((205, 205, 205))
 
-    #x_offset, y_offset, key_size = center_keyboard()
+    # Find the width and height of the screen the program is run on
     width, height = pg.display.get_surface().get_size()
+
+    # Find the max number of keys in a single row of the defined keyboard
     max_columns = 0
     for row in keyboard:
         if(row.__len__() > max_columns):
             max_columns = row.__len__()
 
+    # Find the number of rows in the defined keyboard
     num_rows = keyboard.__len__()
+
+    # Determine the size of the keys (want them to be squared) by determining
+    # whether the height or width of the screen is the limiting factor
     key_size = width/max_columns
     if( (key_size * num_rows) > height ):
         key_size = height/max_columns
         
+    # Center the keyboard by finding the distance leftover on the top and bottom
+    # of the screen
     wid = key_size * max_columns - (2 * key_size * (1-key_buffer))
     hei = key_size * num_rows - (2 * key_size * (1-key_buffer))
-
     x_offset = (width-wid)/2
     y_offset = (height-hei)/2
 
+    # Go through each row in the keyboard, print each key based on the height and 
+    # width of the key determined above
     for row in keyboard:
+
+        # Determine the number of keys in the row currently being iterated through
         num_keys = row.__len__()
+
+        # Stagger the keys similar to how a QWERTY keyboard is staggered
         if(num_keys == max_columns ):
             row_offset = 0
         else:
             row_offset = (max_columns-num_keys)*(key_size/2)
         
+        # Boolean variable to track whether to add the stagger or not
         first = True
+
+        # Add a buffer between keys to look more natural
         keySize = key_size*key_buffer
+
+        # Change the font size to match that of the keys it will sit on
         font_keyboard = pg.font.SysFont("Alata", int(keySize))
+
+        # Go through each key in the row
         for key in row:
+
+            # If it's the first key, apply the stagger. Draw the keys here
             if(first):
                 x_offset += row_offset
                 pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
@@ -61,11 +83,16 @@ def init_keyboard():
             else:
                 pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
 
+            # Draws the letter on the key based on the keyboard defined above
             screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
 
+            # Iterate the x_offset based on the size of the keys
             x_offset += key_size
 
+        # Reset the x_offset so it prints at the beginning of the screen again
         x_offset = 0
+
+        # Add the key_size to the y_offset to print the next row
         y_offset += key_size
 
         

@@ -6,7 +6,6 @@ import pygame as pg
 
 pg.init()
 pg.font.init()
-font = pg.font.SysFont("Alata", 700)
 
 time_keys = []
 letters = ['K', 'W', 'E']
@@ -21,30 +20,18 @@ key_buffer = 0.95
    #         [pg.K_z,pg.K_x,pg.K_c,pg.K_v,pg.K_b,pg.K_n,pg.K_m]
 #]
 keyboard = [
-            ['q','w','e','r','t','y','u','i','o','p'],
-            ['a','s','d','f','g','h','j','k','l'],
-            ['z','x','c','v','b','n','m']
+            ['Q','W','E','R','T','Y','U','I','O','P'],
+            ['A','S','D','F','G','H','J','K','L'],
+            ['Z','X','C','V','B','N','M']
 ]
-
-def render_font(str):
-    text = font.render(str, True, font_color)
-    return text
-
-def render_screen():
-    # Sets the pg screen to fit the entire screen
-    screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
-    return screen
 
 class create_keyboard(object):
     def __init__(self):
-        screen = render_screen()
+
+        screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
         screen.fill((205, 205, 205))
 
-        #first row = 10
-        #second row = 9
-        #third row = 7
         width, height = pg.display.get_surface().get_size()
-
         max = 0
         for row in keyboard:
             if(row.__len__() > max):
@@ -62,16 +49,20 @@ class create_keyboard(object):
                 row_offset = (max-num_keys)*(key_size/2)
             
             first = True
+            keySize = key_size*key_buffer
+            font_keyboard = pg.font.SysFont("Alata", int(keySize))
             for key in row:
                 if(first):
                     x_offset += row_offset
-                    Rect = pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, key_size*key_buffer, key_size*key_buffer))
+                    pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
                     first = False
                 else:
-                    Rect = pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, key_size*key_buffer, key_size*key_buffer))
+                    pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
 
-                screen.blit(font.render(key, True, key_color, (200,100)))
+                screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
+
                 x_offset += key_size
+
             x_offset = 0
             y_offset += key_size
 
@@ -105,11 +96,11 @@ def start_window():
     #pg.draw.rect(screen,key_color,pg.Rect(100, 100, 60, 60))
     #pg.display.flip();         
 
-try:
-    start_window()
-except:
-    print("An error occurred. Please double check the file.")
-finally:
-    with open("test.csv", "w") as fp:
-        for input in time_keys:
-            fp.write(f"{input[0]},{input[1]}\n")
+#try:
+start_window()
+#except:
+ #   print("An error occurred. Please double check the file.")
+#finally:
+ #   with open("test.csv", "w") as fp:
+  #      for input in time_keys:
+   #         fp.write(f"{input[0]},{input[1]}\n")

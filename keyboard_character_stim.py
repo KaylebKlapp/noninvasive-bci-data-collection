@@ -3,6 +3,7 @@ from datetime import datetime
 import brainflow as bf
 import numpy as np
 import pygame as pg
+import random
 
 pg.init()
 pg.font.init()
@@ -14,65 +15,105 @@ font_color = (255,255,255)
 key_color = (0,0,0)
 key_buffer = 0.95
 
-#keyboard = [
- #           [pg.K_q,pg.K_w,pg.K_e,pg.K_r,pg.K_t,pg.K_y,pg.K_u,pg.K_i,pg.K_o,pg.K_p],
-  #          [pg.K_a,pg.K_s,pg.K_d,pg.K_f,pg.K_g,pg.K_h,pg.K_j,pg.K_k,pg.K_l],
-   #         [pg.K_z,pg.K_x,pg.K_c,pg.K_v,pg.K_b,pg.K_n,pg.K_m]
-#]
 keyboard = [
             ['Q','W','E','R','T','Y','U','I','O','P'],
             ['A','S','D','F','G','H','J','K','L'],
             ['Z','X','C','V','B','N','M']
 ]
 
-class create_keyboard(object):
-    def __init__(self):
+def init_keyboard():
+    screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
+    screen.fill((205, 205, 205))
 
-        screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
-        screen.fill((205, 205, 205))
+    # Find the width and height of the screen the program is run on
+    width, height = pg.display.get_surface().get_size()
 
-        width, height = pg.display.get_surface().get_size()
-        max = 0
-        for row in keyboard:
-            if(row.__len__() > max):
-                max = row.__len__()
+    # Find the max number of keys in a single row of the defined keyboard
+    max_columns = 0
+    for row in keyboard:
+        if(row.__len__() > max_columns):
+            max_columns = row.__len__()
 
-        key_size = width/max
-        x_offset = height*0.005
-        y_offset = (height-(key_size*keyboard.__len__()))/2
+    # Find the number of rows in the defined keyboard
+    num_rows = keyboard.__len__()
 
-        for row in keyboard:
-            num_keys = row.__len__()
-            if(num_keys == max ):
-                row_offset = 0
+    # Determine the size of the keys (want them to be squared) by determining
+    # whether the height or width of the screen is the limiting factor
+    key_size = width/max_columns
+    if( (key_size * num_rows) > height ):
+        key_size = height/max_columns
+        
+    # Center the keyboard by finding the distance leftover on the top and bottom
+    # of the screen
+    wid = key_size * max_columns - (2 * key_size * (1-key_buffer))
+    hei = key_size * num_rows - (2 * key_size * (1-key_buffer))
+    x_offset = (width-wid)/2
+    y_offset = (height-hei)/2
+
+    # Go through each row in the keyboard, print each key based on the height and 
+    # width of the key determined above
+    for row in keyboard:
+
+        # Determine the number of keys in the row currently being iterated through
+        num_keys = row.__len__()
+
+        # Stagger the keys similar to how a QWERTY keyboard is staggered
+        if(num_keys == max_columns ):
+            row_offset = 0
+        else:
+            row_offset = (max_columns-num_keys)*(key_size/2)
+        
+        # Boolean variable to track whether to add the stagger or not
+        first = True
+
+        # Add a buffer between keys to look more natural
+        keySize = key_size*key_buffer
+
+        # Change the font size to match that of the keys it will sit on
+        font_keyboard = pg.font.SysFont("Alata", int(keySize))
+
+        # Go through each key in the row
+        for key in row:
+
+            # If it's the first key, apply the stagger. Draw the keys here
+            if(first):
+                x_offset += row_offset
+                pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+                first = False
             else:
-                row_offset = (max-num_keys)*(key_size/2)
-            
-            first = True
-            keySize = key_size*key_buffer
-            font_keyboard = pg.font.SysFont("Alata", int(keySize))
-            for key in row:
-                if(first):
-                    x_offset += row_offset
-                    pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
-                    first = False
-                else:
-                    pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+                pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
 
-                screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
+            # Draws the letter on the key based on the keyboard defined above
+            screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
 
-                x_offset += key_size
+            # Iterate the x_offset based on the size of the keys
+            x_offset += key_size
 
-            x_offset = 0
-            y_offset += key_size
+        # Reset the x_offset so it prints at the beginning of the screen again
+        x_offset = 0
 
-        pg.display.flip()
+        # Add the key_size to the y_offset to print the next row
+        y_offset += key_size
+
         
 
 def start_window():
     pg.display.set_caption("BCI training")
-    keyboard = create_keyboard()
-    keyboard.__init__()
+    init_keyboard()
+
+    method = random.random()
+
+    pg.display.flip()
+
+    if( method <= 0.33 ):
+        # flash red key
+        pass
+    elif( method <= 0.66 ):
+        # enlarge key
+        pass
+    else:
+        # make keyboard disappear and flash one letter
+        pass
 
     letter_index = 0
     running = True
@@ -88,19 +129,14 @@ def start_window():
                     letter_index %= len(letters)
 
                 elif event.key == pg.K_ESCAPE:
-                    running = False
-                
-    
-    #text = render_font(letters[letter_index])
-    #screen.blit(text, (50, 50))
-    #pg.draw.rect(screen,key_color,pg.Rect(100, 100, 60, 60))
-    #pg.display.flip();         
+                    running = False 
 
-#try:
-start_window()
-#except:
- #   print("An error occurred. Please double check the file.")
-#finally:
- #   with open("test.csv", "w") as fp:
-  #      for input in time_keys:
-   #         fp.write(f"{input[0]},{input[1]}\n")
+try:
+    start_window()
+except Exception as e:
+    print(e.__str__())
+    print("An error occurred. Please double check the file.")
+finally:
+    with open("test.csv", "w") as fp:
+        for input in time_keys:
+            fp.write(f"{input[0]},{input[1]}\n")

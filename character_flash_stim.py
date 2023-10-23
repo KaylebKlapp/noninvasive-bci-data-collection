@@ -78,14 +78,12 @@ def start_window():
     color = get_random_color()
     
     end_time = (time.time() * 1000) + length_of_flash
-    show_time = end_time + random.randrange(500, 2500)
 
-    row = random.sample(alphabet, 5)
-    for letter in row:
-        alphabet.remove(letter)
+    
+    show_time = end_time + random.randrange(5500, 6500)
 
     character, character_key = get_random_letter_key_pair()
-    letter_index = 0
+    
     running = True
     while running:
 
@@ -95,8 +93,12 @@ def start_window():
         if (time.time() * 1000 > show_time):
             showing_character = True
             end_time = (time.time() * 1000) + length_of_flash
-            show_time = end_time + random.randrange(1500, 5500)
             character, character_key = get_random_letter_key_pair()
+            if (random.randint(0,10) == 0):
+                show_time = end_time + random.randrange(5500, 6500)
+                time_keys.append(["~", end_time + 1000])
+            else:
+                show_time = end_time + random.randrange(500, 2500)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

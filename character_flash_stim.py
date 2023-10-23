@@ -5,6 +5,13 @@ import time
 import argparse
 import random
 
+date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
+collection_type = "flashing_stim"
+subject_name = "kayleb"
+more_info = ""
+
+file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}.txt"
+
 pygame.init()
 pygame.font.init()
 font = pygame.font.SysFont("Alata", 500)
@@ -31,12 +38,11 @@ alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
 nontraining_letters = alphabet
 f = fonts[0]
 
-training_letters = ['K', 'W', 'E']
+training_letters = ['K', 'V', 'E']
 training_keys = [pygame.key.key_code(letter) for letter in training_letters]
 
 for let in training_letters:
     nontraining_letters.remove(let)
-    
 
 def get_random_letter_key_pair():
     if (random.random() <= .75):
@@ -129,6 +135,6 @@ except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
 finally:
-    with open("test.csv", "w") as fp:
+    with open(file_name, "w") as fp:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")

@@ -101,6 +101,9 @@ def draw_keys(screen, key):
         pg.draw.rect(screen,key_color,pg.Rect(key[2][0], key[2][1], key[1], key[1]))
         screen.blit(font_keyboard.render(key[0], True, font_color), (key[2][0],key[2][1]))
 
+def flash_key(screen,key):
+    pass
+
 
 
 
@@ -130,13 +133,24 @@ def init_keyboard(char, method):
                 x_offset += row_offset
                 first = False
 
+            #draw_keys(screen,key)
+
             keyboard[row][key][1] = keySize
             keyboard[row][key][2] = (x_offset, y_offset)
-            if(method == 3):
+            if(method == 1):
+                keyboard[row][key][3] = True
+
+            elif(method == 2):
+                keyboard[row][key][3] = True
+
+            elif(method == 3):
                 if(keyboard[row][key][0] == char):
                     keyboard[row][key][3] = True
                 else:
                     keyboard[row][key][3] = False
+
+            else:
+                keyboard[row][key][3] = True
 
             # Iterate the x_offset based on the size of the keys
             x_offset += key_size
@@ -159,39 +173,54 @@ def start_window():
     pg.display.set_caption("BCI training")
     screen = initialize_screen()
 
+    # CONSIDER MOVING DRAW_KEYS BACK INTO INIT KEYBOARD FOR SIMPLICITY IN FLASHING CHARACTERS
 
     running = True
     while running:
+        character, character_key = get_random_letter_key_pair()
+
         method = random.random()
         print(method)
         # flash red key
         if( method <= 0.33 ):
-            init_keyboard('',1)
-            #print(keyboard)
+            init_keyboard(character,1)
             for row in keyboard:
                 for key in row:
                     draw_keys(screen, key)
 
-            #character, character_key = get_random_letter_key_pair()
-
-
         # enlarge key
         elif( method <= 0.66 ):
-            init_keyboard('',2)
-            #print(keyboard)
+            init_keyboard(character,2)
             for row in keyboard:
                 for key in row:
                     draw_keys(screen, key)
         
         # make keyboard disappear and flash one letter
         else:
-            init_keyboard('A',3)
-            #print(keyboard)
+            # Draw the initial keyboard
+            init_keyboard(character,100)
+            for row in keyboard:
+                for key in row:
+                    draw_keys(screen, key)
+
+            pg.display.flip()
+            time.sleep(1)
+
+            # Clear the screen and display the character
+            screen.fill((205,205,205))
+            pg.display.flip()
+            time.sleep(0.5)
+            init_keyboard(character,3)
             for row in keyboard:
                 for key in row:
                     draw_keys(screen, key)
 
         pg.display.flip()
+
+        time.sleep(3)
+        screen.fill((205, 205, 205))
+        pg.display.flip()
+        time.sleep(1)
 
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:

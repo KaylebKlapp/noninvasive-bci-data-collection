@@ -48,23 +48,23 @@ def get_random_letter_key_pair():
 def get_random_color(min_range = 0, max_range = 220):
     return (random.randrange(min_range, max_range), random.randrange(min_range, max_range), random.randrange(min_range, max_range))
 
-def get_random_ront(font, randomize_attributes = False, color = (0, 0, 0)):
+def get_random_font(font, randomize_attributes = False):
     font_made = pygame.font.SysFont(font, random.randrange(400, 750))
     if (randomize_attributes):
         random_float = random.random()
-        if random_float < 0.05:
+        if random_float < 0.20:
             pygame.font.Font.set_bold(font_made, True)
         
         random_float = random.random()
-        if random_float < 0.05:
+        if random_float < 0.20:
             pygame.font.Font.set_italic(font_made, True)
         
         random_float = random.random()
-        if random_float < 0.05:
+        if random_float < 0.20:
             pygame.font.Font.set_strikethrough(font_made, True)
 
         random_float = random.random()
-        if random_float < 0.05:
+        if random_float < 0.20:
             pygame.font.Font.set_underline(font_made, True)
         
     return font_made
@@ -74,18 +74,16 @@ def start_window():
     font_index = 0
     pygame.display.set_caption("BCI training")
     screen = pygame.display.set_mode((screen_width, screen_height))
-    font = get_random_ront(font=fonts[font_index], randomize_attributes=True)
+    font = get_random_font(font=fonts[font_index], randomize_attributes=True)
     color = get_random_color()
     
     end_time = (time.time() * 1000) + length_of_flash
-    show_time = end_time + random.randrange(500, 2500)
 
-    row = random.sample(alphabet, 5)
-    for letter in row:
-        alphabet.remove(letter)
+    
+    show_time = end_time + random.randrange(5500, 6500)
 
     character, character_key = get_random_letter_key_pair()
-    letter_index = 0
+    
     running = True
     while running:
 
@@ -95,8 +93,12 @@ def start_window():
         if (time.time() * 1000 > show_time):
             showing_character = True
             end_time = (time.time() * 1000) + length_of_flash
-            show_time = end_time + random.randrange(1500, 5500)
             character, character_key = get_random_letter_key_pair()
+            if (random.randint(0,10) == 0):
+                show_time = end_time + random.randrange(5500, 6500)
+                time_keys.append(["~", end_time + 1000])
+            else:
+                show_time = end_time + random.randrange(500, 2500)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -108,7 +110,7 @@ def start_window():
                     del time_keys[-1]
                 if character in training_letters and event.key == character_key:
                     time_keys.append([character, show_time])
-                    font = get_random_ront(font=fonts[font_index], randomize_attributes=True)
+                    font = get_random_font(font=fonts[font_index], randomize_attributes=True)
                     color = get_random_color()
                     
         screen.fill((205, 205, 205))

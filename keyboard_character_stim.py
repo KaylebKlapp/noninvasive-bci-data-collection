@@ -96,15 +96,16 @@ def draw_keys(screen, key):
     # Change the font size to match that of the keys it will sit on
     font_keyboard = pg.font.SysFont("Alata", int(key[1]))
 
-    # Draw the keys
-    pg.draw.rect(screen,key_color,pg.Rect(key[2][0], key[2][0], key[1], key[1]))
-    screen.blit(font_keyboard.render(key, True, font_color), (key[2][0],key[2][0]))
+    if(key[3]):
+        # Draw the keys
+        pg.draw.rect(screen,key_color,pg.Rect(key[2][0], key[2][1], key[1], key[1]))
+        screen.blit(font_keyboard.render(key[0], True, font_color), (key[2][0],key[2][1]))
 
 
 
 
 
-def init_keyboard():
+def init_keyboard(char, method):
 
     # Determine the key size and offset to center the keyboard
     x_offset, y_offset, max_columns, key_size = determine_keysize_and_offset()
@@ -131,6 +132,11 @@ def init_keyboard():
 
             keyboard[row][key][1] = keySize
             keyboard[row][key][2] = (x_offset, y_offset)
+            if(method == 3):
+                if(keyboard[row][key][0] == char):
+                    keyboard[row][key][3] = True
+                else:
+                    keyboard[row][key][3] = False
 
             # Iterate the x_offset based on the size of the keys
             x_offset += key_size
@@ -148,52 +154,74 @@ def init_keyboard():
 
 
 def start_window():
-    pg.display.set_caption("BCI training")
-    screen = initialize_screen()
-    init_keyboard()
 
     # Initialize the screen
+    pg.display.set_caption("BCI training")
+    screen = initialize_screen()
 
-    for row in keyboard:
-        for key in row:
-            draw_keys(screen, key)
 
-    method = random.random()
-
-    pg.display.flip()
-
-    if( method <= 0.33 ):
-        # flash red key
-        character, character_key = get_random_letter_key_pair()
-    elif( method <= 0.66 ):
-        # enlarge key
-        pass
-    else:
-        # make keyboard disappear and flash one letter
-        pass
-
-    letter_index = 0
     running = True
     while running:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
-                break
-            elif event.type == pg.KEYDOWN:
-                if event.key == keys[letter_index]:
-                    time_keys.append([letters[letter_index], int(time.time() * 1000)])
-                    letter_index += 1
-                    letter_index %= len(letters)
+        method = random.random()
+        print(method)
+        # flash red key
+        if( method <= 0.33 ):
+            init_keyboard('',1)
+            #print(keyboard)
+            for row in keyboard:
+                for key in row:
+                    draw_keys(screen, key)
 
-                elif event.key == pg.K_ESCAPE:
+            #character, character_key = get_random_letter_key_pair()
+
+
+        # enlarge key
+        elif( method <= 0.66 ):
+            init_keyboard('',2)
+            #print(keyboard)
+            for row in keyboard:
+                for key in row:
+                    draw_keys(screen, key)
+        
+        # make keyboard disappear and flash one letter
+        else:
+            init_keyboard('A',3)
+            #print(keyboard)
+            for row in keyboard:
+                for key in row:
+                    draw_keys(screen, key)
+
+        pg.display.flip()
+
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
                     running = False
+
+    
+
+    #letter_index = 0
+    #running = True
+    #while running:
+     #   for event in pg.event.get():
+      #      if event.type == pg.QUIT:
+       #         running = False
+        #        break
+         #   elif event.type == pg.KEYDOWN:
+          #      if event.key == keys[letter_index]:
+           #         time_keys.append([letters[letter_index], int(time.time() * 1000)])
+            #        letter_index += 1
+             #       letter_index %= len(letters)
+#
+ #               elif event.key == pg.K_ESCAPE:
+  #                  running = False
 
 try:
     start_window()
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
-finally:
-    with open("test.csv", "w") as fp:
-        for input in time_keys:
-            fp.write(f"{input[0]},{input[1]}\n")
+#finally:
+    #with open("test.csv", "w") as fp:
+     #   for input in time_keys:
+      #      fp.write(f"{input[0]},{input[1]}\n")

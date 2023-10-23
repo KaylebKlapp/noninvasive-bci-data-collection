@@ -13,6 +13,9 @@ letters = ['K', 'W', 'E']
 keys = [pg.K_k, pg.K_w, pg.K_e]
 font_color = (255,255,255)
 key_color = (0,0,0)
+flash_color = (255,0,0)
+flash_num = 5
+flash_delay = 0.25
 key_buffer = 0.95
 
 training_key_percentage = 0.75
@@ -23,11 +26,11 @@ training_key_percentage = 0.75
    #         ['Z','X','C','V','B','N','M']
 #]
 
-# [character, size, coordinate, visibility]
+# [character, size, coordinate, visibility, flash]
 keyboard = [
-            [['Q',0,tuple,True],['W',0,tuple,True],['E',0,tuple,True],['R',0,tuple,True],['T',0,tuple,True],['Y',0,tuple,True],['U',0,tuple,True],['I',0,tuple,True],['O',0,tuple,True],['P',0,tuple,True]],
-            [['A',0,tuple,True],['S',0,tuple,True],['D',0,tuple,True],['F',0,tuple,True],['G',0,tuple,True],['H',0,tuple,True],['J',0,tuple,True],['K',0,tuple,True],['L',0,tuple,True]],
-            [['Z',0,tuple,True],['X',0,tuple,True],['C',0,tuple,True],['V',0,tuple,True],['B',0,tuple,True],['N',0,tuple,True],['M',0,tuple,True]]
+            [['Q',0,tuple,True,False],['W',0,tuple,True,False],['E',0,tuple,True,False],['R',0,tuple,True,False],['T',0,tuple,True,False],['Y',0,tuple,True,False],['U',0,tuple,True,False],['I',0,tuple,True,False],['O',0,tuple,True,False],['P',0,tuple,True,False]],
+            [['A',0,tuple,True,False],['S',0,tuple,True,False],['D',0,tuple,True,False],['F',0,tuple,True,False],['G',0,tuple,True,False],['H',0,tuple,True,False],['J',0,tuple,True,False],['K',0,tuple,True,False],['L',0,tuple,True,False]],
+            [['Z',0,tuple,True,False],['X',0,tuple,True,False],['C',0,tuple,True,False],['V',0,tuple,True,False],['B',0,tuple,True,False],['N',0,tuple,True,False],['M',0,tuple,True,False]]
 ]
 
 training_letters = ['K', 'W', 'E']
@@ -95,20 +98,34 @@ def initialize_screen():
 def draw_keys(screen, key):
     # Change the font size to match that of the keys it will sit on
     font_keyboard = pg.font.SysFont("Alata", int(key[1]))
-
     if(key[3]):
-        # Draw the keys
-        pg.draw.rect(screen,key_color,pg.Rect(key[2][0], key[2][1], key[1], key[1]))
-        screen.blit(font_keyboard.render(key[0], True, font_color), (key[2][0],key[2][1]))
+        if(key[4]):
+            original = True
+            for i in range(flash_num*2):
+                if(original):
+                    # Draw the keys
+                    pg.draw.rect(screen,key_color,pg.Rect(key[2][0], key[2][1], key[1], key[1]))
+                    screen.blit(font_keyboard.render(key[0], True, font_color), (key[2][0],key[2][1]))
+                    pg.display.flip()
+                    time.sleep(flash_delay)
+                    original = False
+                else:
+                    # Draw the keys
+                    pg.draw.rect(screen,flash_color,pg.Rect(key[2][0], key[2][1], key[1], key[1]))
+                    screen.blit(font_keyboard.render(key[0], True, font_color), (key[2][0],key[2][1]))
+                    pg.display.flip()
+                    time.sleep(flash_delay)
+                    original = True
+        else:
+            # Draw the keys
+            pg.draw.rect(screen,key_color,pg.Rect(key[2][0], key[2][1], key[1], key[1]))
+            screen.blit(font_keyboard.render(key[0], True, font_color), (key[2][0],key[2][1]))
 
-def flash_key(screen,key):
-    pass
 
 
 
 
-
-def init_keyboard(char, method):
+def init_keyboard(char, method, flash):
 
     # Determine the key size and offset to center the keyboard
     x_offset, y_offset, max_columns, key_size = determine_keysize_and_offset()
@@ -137,13 +154,7 @@ def init_keyboard(char, method):
 
             keyboard[row][key][1] = keySize
             keyboard[row][key][2] = (x_offset, y_offset)
-            if(method == 1):
-                keyboard[row][key][3] = True
-
-            elif(method == 2):
-                keyboard[row][key][3] = True
-
-            elif(method == 3):
+            if(method == 3):
                 if(keyboard[row][key][0] == char):
                     keyboard[row][key][3] = True
                 else:
@@ -151,6 +162,9 @@ def init_keyboard(char, method):
 
             else:
                 keyboard[row][key][3] = True
+
+            if(keyboard[row][key][0] == char):
+                keyboard[row][key][4] = True
 
             # Iterate the x_offset based on the size of the keys
             x_offset += key_size
@@ -183,14 +197,14 @@ def start_window():
         print(method)
         # flash red key
         if( method <= 0.33 ):
-            init_keyboard(character,1)
+            init_keyboard(character,1,True)
             for row in keyboard:
                 for key in row:
                     draw_keys(screen, key)
 
         # enlarge key
         elif( method <= 0.66 ):
-            init_keyboard(character,2)
+            init_keyboard(character,2,False)
             for row in keyboard:
                 for key in row:
                     draw_keys(screen, key)
@@ -198,7 +212,7 @@ def start_window():
         # make keyboard disappear and flash one letter
         else:
             # Draw the initial keyboard
-            init_keyboard(character,100)
+            init_keyboard(character,100,False)
             for row in keyboard:
                 for key in row:
                     draw_keys(screen, key)
@@ -210,7 +224,7 @@ def start_window():
             screen.fill((205,205,205))
             pg.display.flip()
             time.sleep(0.5)
-            init_keyboard(character,3)
+            init_keyboard(character,3,True)
             for row in keyboard:
                 for key in row:
                     draw_keys(screen, key)

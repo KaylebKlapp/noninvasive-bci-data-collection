@@ -26,7 +26,7 @@ key_buffer = 0.95
 
 class create_keyboard(object):
     screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
-
+    timeshowchar = 0
     def flash_color(self, letter):
         flash_COLOR = RED   
         flash_time = 0.2
@@ -46,7 +46,7 @@ class create_keyboard(object):
             for letter in key_row:
                 alphabet.remove(letter)
 
-        REDLETTER1 = random.choice(letter)
+        REDLETTER1 = random.choice(letters)
         
         ##screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
         self.screen.fill((205, 205, 205))
@@ -104,6 +104,7 @@ class create_keyboard(object):
         self.screen.blit(font_keyboard2.render('START TEST', True, font_color), (width/2+225, height/2))
 
         pg.display.flip()
+        self.timeshowchar = time.time()*1000
         
     def __init__(self):
         self.draw_board
@@ -115,34 +116,38 @@ def start_window():
     ##random_letter = random.choice(letters)
     letter_index = 0
     running = True 
+    ##show_time = end_time + random.randrange(5500, 6500)
+
     while running:
         ##write a section that changes the flash
 
         for event in pg.event.get():
+            
             keyboard.draw_board()
+            
             if event.type == pg.QUIT:
                 running = False
                 break
             elif event.type == pg.KEYDOWN:
                 if event.key == keys[letter_index]:
-                    time_keys.append([letters[letter_index], int(time.time() * 1000)])
+                    time_keys.append([letters[letter_index], keyboard.timeshowchar])
                     letter_index += 1
                     letter_index %= len(letters)
 
                 elif event.key == pg.K_ESCAPE:
                     running = False
-                
-            
+            time.sleep(3)
+        
     #text = render_font(letters[letter_index])
     #screen.blit(text, (50, 50))
     #pg.draw.rect(screen,key_color,pg.Rect(100, 100, 60, 60))
     #pg.display.flip();         
 
-#try:
-start_window()
-#except:
- #   print("An error occurred. Please double check the file.")
-#finally:
- #   with open("test.csv", "w") as fp:
-  #      for input in time_keys:
-   #         fp.write(f"{input[0]},{input[1]}\n")
+try:
+    start_window()
+except:
+    print("An error occurred. Please double check the file.")
+finally:
+    with open("TambakisTest.csv", "w") as fp:
+        for input in time_keys:
+            fp.write(f"{input[0]},{input[1]}\n")

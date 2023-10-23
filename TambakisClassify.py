@@ -4,9 +4,12 @@ import brainflow as bf
 import numpy as np
 import pygame as pg
 import random
+import tkinter as tk 
+
 
 pg.init()
 pg.font.init()
+RED = (255,0,0)
 
 time_keys = []
 letters = ['K', 'W', 'E']
@@ -22,7 +25,19 @@ key_buffer = 0.95
 
 
 class create_keyboard(object):
-    def __init__(self):
+    screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
+
+    def flash_color(self, letter):
+        flash_COLOR = RED   
+        flash_time = 0.2
+        font_keyboard = pg.font.SysFont("Alata", 60)
+        self.screen.fill((205, 205, 205))  # Clear the screen
+        pg.draw.rect(self.screen, key_color, pg.Rect(100, 100, 60, 60))  # Draw a key
+        self.screen.blit(font_keyboard.render(letter, True, flash_COLOR), (50, 50))  # Flash the letter
+        pg.display.flip()  # Update the display
+        time.sleep(flash_time)  # Wait for the flash to disappear
+
+    def draw_board(self):
         keyboard = [[] for i in range(5)]
         alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
         for index, key_row in enumerate(keyboard):
@@ -31,9 +46,10 @@ class create_keyboard(object):
             for letter in key_row:
                 alphabet.remove(letter)
 
-
-        screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
-        screen.fill((205, 205, 205))
+        REDLETTER1 = random.choice(letter)
+        
+        ##screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
+        self.screen.fill((205, 205, 205))
 
         width, height = pg.display.get_surface().get_size()
         max = 0
@@ -62,38 +78,48 @@ class create_keyboard(object):
             for key in row:
                 if(first):
                     x_offset += row_offset
-                    pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+                    pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
                     first = False
+                
                 else:
-                    pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+                    pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
 
-                screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
+                if(key==REDLETTER1):
+                    self.screen.blit(font_keyboard.render(key, True, RED), (x_offset,y_offset))
+                if(key!=REDLETTER1):
+                    self.screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
 
+                ##random_letter = random.choice(letters)
                 x_offset += key_size
 
             x_offset = 0
             y_offset += key_size
 
-        # dark shade of the button 
+        # dark shade of the button                     random_letter = random.choice(letters)
         color_dark = (100,100,100) 
         button = pg.Rect(width/2+200, height/2, 200, 100) 
-        pg.draw.rect(screen, [100, 100, 100], button)  # draw button
+        pg.draw.rect(self.screen, [100, 100, 100], button)  # draw button
         font_keyboard2 = pg.font.SysFont("Alata", 40)
-
-        screen.blit(font_keyboard2.render('START TEST', True, font_color), (width/2+225, height/2))
+        ##random_letter = random.choice(letters)
+        self.screen.blit(font_keyboard2.render('START TEST', True, font_color), (width/2+225, height/2))
 
         pg.display.flip()
         
+    def __init__(self):
+        self.draw_board
 
 def start_window():
     pg.display.set_caption("BCI training")
     keyboard = create_keyboard()
     keyboard.__init__()
-    
+    ##random_letter = random.choice(letters)
     letter_index = 0
     running = True 
     while running:
+        ##write a section that changes the flash
+
         for event in pg.event.get():
+            keyboard.draw_board()
             if event.type == pg.QUIT:
                 running = False
                 break
@@ -106,7 +132,7 @@ def start_window():
                 elif event.key == pg.K_ESCAPE:
                     running = False
                 
-    
+            
     #text = render_font(letters[letter_index])
     #screen.blit(text, (50, 50))
     #pg.draw.rect(screen,key_color,pg.Rect(100, 100, 60, 60))

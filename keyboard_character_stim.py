@@ -248,11 +248,17 @@ def start_window():
         screen.fill((205, 205, 205))
         pg.display.flip()
         pg.time.wait(1000)
-
+        show_time = 0
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     running = False
+                #if event.key == pg.K_BACKSPACE:
+                #    del time_keys[-1]
+                if character in training_letters and event.key == character_key:
+                    time_keys.append([character, show_time])
+
+    print(time_keys)
 
     
 

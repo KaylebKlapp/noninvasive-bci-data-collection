@@ -15,7 +15,7 @@ font_color = (255,255,255)
 key_color = (0,0,0)
 flash_color = (255,0,0)
 flash_num = 5
-flash_delay = 0.25
+flash_delay = 250
 key_buffer = 0.95
 keyboard_font = "Alata"
 flash_toggle = True
@@ -111,14 +111,14 @@ def flash_keys(original, screen, key, x_offset, y_offset, size, font_keyboard, k
             pg.draw.rect(screen,keyColor,pg.Rect(x_offset, y_offset, size, size))
             screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
             pg.display.flip()
-            time.sleep(flash_delay)
+            pg.time.wait(flash_delay)
             original = False
         else:
             # Draw the keys
             pg.draw.rect(screen,flashColor,pg.Rect(x_offset, y_offset, size, size))
             screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
             pg.display.flip()
-            time.sleep(flash_delay)
+            pg.time.wait(flash_delay)
             original = True
 
 
@@ -181,7 +181,7 @@ def init_keyboard(char, method, screen, flash):
         flash_keys(True,screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,font_keyboard,key_color,flash_color,font_color)
 
     elif( method == 2 ):
-        time.sleep(1)
+        pg.time.wait(1000)
         charRow = char_row_and_col[0]
         charCol = char_row_and_col[1]
         x_offsetChar = keyboard[charRow][charCol][2][0]
@@ -194,10 +194,10 @@ def init_keyboard(char, method, screen, flash):
             draw_keys(screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,True,font_keyboard,flash_color,font_color)
 
     elif( method == 3 ):
-        time.sleep(1)
+        pg.time.wait(1000)
         screen.fill((205,205,205))
         pg.display.flip()
-        time.sleep(0.5)
+        pg.time.wait(500)
         charRow = char_row_and_col[0]
         charCol = char_row_and_col[1]
         x_offsetChar = keyboard[charRow][charCol][2][0]
@@ -244,10 +244,10 @@ def start_window():
             # Draw the initial keyboard
             init_keyboard(character,3,screen,flash_toggle)
 
-        time.sleep(3)
+        pg.time.wait(3000)
         screen.fill((205, 205, 205))
         pg.display.flip()
-        time.sleep(1)
+        pg.time.wait(1000)
 
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:

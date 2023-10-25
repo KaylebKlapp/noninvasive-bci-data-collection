@@ -13,14 +13,45 @@ letters = ['K', 'W', 'E']
 keys = [pg.K_k, pg.K_w, pg.K_e]
 font_color = (255,255,255)
 key_color = (0,0,0)
+flash_color = (255,0,0)
+flash_num = 5
+flash_delay = 250
 key_buffer = 0.95
+keyboard_font = "Alata"
+flash_toggle = True
 
+training_key_percentage = 0.75
+
+#keyboard = [
+ #           ['Q','W','E','R','T','Y','U','I','O','P'],
+  #          ['A','S','D','F','G','H','J','K','L'],
+   #         ['Z','X','C','V','B','N','M']
+#]
+
+# [character, size, coordinate]
 keyboard = [
-            ['Q','W','E','R','T','Y','U','I','O','P'],
-            ['A','S','D','F','G','H','J','K','L'],
-            ['Z','X','C','V','B','N','M']
+            [['Q',0,tuple],['W',0,tuple],['E',0,tuple],['R',0,tuple],['T',0,tuple],['Y',0,tuple],['U',0,tuple],['I',0,tuple],['O',0,tuple],['P',0,tuple]],
+            [['A',0,tuple],['S',0,tuple],['D',0,tuple],['F',0,tuple],['G',0,tuple],['H',0,tuple],['J',0,tuple],['K',0,tuple],['L',0,tuple]],
+            [['Z',0,tuple],['X',0,tuple],['C',0,tuple],['V',0,tuple],['B',0,tuple],['N',0,tuple],['M',0,tuple]]
 ]
 
+training_letters = ['K', 'W', 'E']
+training_keys = [pg.key.key_code(letter) for letter in training_letters]
+
+alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
+nontraining_letters = alphabet
+
+for let in training_letters:
+    nontraining_letters.remove(let)
+    
+def get_random_letter_key_pair():
+    if (random.random() <= training_key_percentage):
+        rand_index = random.randint(0,2)
+    else:
+        return nontraining_letters[random.randrange(0, len(nontraining_letters))], None
+    return (training_letters[rand_index], training_keys[rand_index])
+
+#keyboard = [[['a',tuple,True]],[['b',tuple,True]]]
 def determine_keysize_and_offset():
     # Find the width and height of the screen the program is run on
     width, height = pg.display.get_surface().get_size()
@@ -66,53 +97,69 @@ def initialize_screen():
     screen.fill((205, 205, 205))
     return screen
 
-def draw_keys(screen, first, x_offset, row_offset, y_offset, keySize, font_keyboard, key):
-    # If it's the first key, apply the stagger. Draw the keys here
-    if(first):
-        x_offset += row_offset
-        pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
-        first = False
-    else:
-        pg.draw.rect(screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+def draw_keys(screen, key, x_offset, y_offset, size, draw, font_keyboard, keyColor, fontColor):
+    # Change the font size to match that of the keys it will sit on
+    if(draw):
+        # Draw the keys
+        pg.draw.rect(screen,keyColor,pg.Rect(x_offset, y_offset, size, size))
+        screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
 
-    # Draws the letter on the key based on the keyboard defined above
-    screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
+def flash_keys(original, screen, key, x_offset, y_offset, size, font_keyboard, keyColor, flashColor, fontColor):
+    for i in range(flash_num*2):
+        if(original):
+            # Draw the keys
+            pg.draw.rect(screen,keyColor,pg.Rect(x_offset, y_offset, size, size))
+            screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
+            pg.display.flip()
+            pg.time.wait(flash_delay)
+            original = False
+        else:
+            # Draw the keys
+            pg.draw.rect(screen,flashColor,pg.Rect(x_offset, y_offset, size, size))
+            screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
+            pg.display.flip()
+            pg.time.wait(flash_delay)
+            original = True
 
-    return x_offset, first
 
 
 
 
-
-
-def init_keyboard():
-    # Initialize the screen
-    screen = initialize_screen()
+def init_keyboard(char, method, screen, flash):
 
     # Determine the key size and offset to center the keyboard
     x_offset, y_offset, max_columns, key_size = determine_keysize_and_offset()
+    
+    # Add a buffer between keys to look more natural
+    keySize = key_size*key_buffer
+
+    # Define the font for the keyboard
+    font_keyboard = pg.font.SysFont(keyboard_font, int(keySize))
 
     # Go through each row in the keyboard, print each key based on the height and 
     # width of the key determined above
-    for row in keyboard:
-
+    for row in range(keyboard.__len__()):
         # Determine the distance the row is staggered
-        row_offset = determine_row_stagger_size(row, max_columns, key_size)
+        row_offset = determine_row_stagger_size(keyboard[row], max_columns, key_size)
 
         # Boolean variable to track whether to add the stagger or not
         first = True
 
-        # Add a buffer between keys to look more natural
-        keySize = key_size*key_buffer
-
-        # Change the font size to match that of the keys it will sit on
-        font_keyboard = pg.font.SysFont("Alata", int(keySize))
-
         # Go through each key in the row
-        for key in row:
+        for key in range(keyboard[row].__len__()):
 
             # Draw the keys and letters for the keyboard
-            x_offset, first = draw_keys(screen, first, x_offset, row_offset, y_offset, keySize, font_keyboard, key)
+            if(first):
+                x_offset += row_offset
+                first = False
+
+            keyboard[row][key][1] = keySize
+            keyboard[row][key][2] = (x_offset, y_offset)
+
+            if( keyboard[row][key][0] == char ):
+                char_row_and_col = (row, key)
+
+            draw_keys(screen,keyboard[row][key],x_offset,y_offset,keySize,True,font_keyboard,key_color,font_color)
 
             # Iterate the x_offset based on the size of the keys
             x_offset += key_size
@@ -122,53 +169,121 @@ def init_keyboard():
 
         # Add the key_size to the y_offset to print the next row
         y_offset += key_size
-        
+    
+    pg.display.flip()
 
+    if( method == 1 ):
+        charRow = char_row_and_col[0]
+        charCol = char_row_and_col[1]
+        x_offsetChar = keyboard[charRow][charCol][2][0]
+        y_offsetChar = keyboard[charRow][charCol][2][1]
+        size = keyboard[charRow][charCol][1]
+        flash_keys(True,screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,font_keyboard,key_color,flash_color,font_color)
 
+    elif( method == 2 ):
+        pg.time.wait(1000)
+        charRow = char_row_and_col[0]
+        charCol = char_row_and_col[1]
+        x_offsetChar = keyboard[charRow][charCol][2][0]
+        y_offsetChar = keyboard[charRow][charCol][2][1]
+        size = keyboard[charRow][charCol][1] * 2
+        font_keyboard = pg.font.SysFont(keyboard_font, int(keySize*2))
+        if(flash):
+            flash_keys(True,screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,font_keyboard,key_color,flash_color,font_color)
+        else:
+            draw_keys(screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,True,font_keyboard,flash_color,font_color)
 
-
-        
-
-def start_window():
-    pg.display.set_caption("BCI training")
-    init_keyboard()
-
-    method = random.random()
+    elif( method == 3 ):
+        pg.time.wait(1000)
+        screen.fill((205,205,205))
+        pg.display.flip()
+        pg.time.wait(500)
+        charRow = char_row_and_col[0]
+        charCol = char_row_and_col[1]
+        x_offsetChar = keyboard[charRow][charCol][2][0]
+        y_offsetChar = keyboard[charRow][charCol][2][1]
+        size = keyboard[charRow][charCol][1]
+        if(flash):
+            flash_keys(True,screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,font_keyboard,key_color,flash_color,font_color)
+        else:
+            draw_keys(screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,True,font_keyboard,key_color,font_color)
 
     pg.display.flip()
 
-    if( method <= 0.33 ):
-        # flash red key
-        pass
-    elif( method <= 0.66 ):
-        # enlarge key
-        pass
-    else:
-        # make keyboard disappear and flash one letter
-        pass
+        
 
-    letter_index = 0
+
+
+
+
+
+def start_window():
+
+    # Initialize the screen
+    pg.display.set_caption("BCI training")
+    screen = initialize_screen()
+
     running = True
     while running:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
-                break
-            elif event.type == pg.KEYDOWN:
-                if event.key == keys[letter_index]:
-                    time_keys.append([letters[letter_index], int(time.time() * 1000)])
-                    letter_index += 1
-                    letter_index %= len(letters)
+        character, character_key = get_random_letter_key_pair()
 
-                elif event.key == pg.K_ESCAPE:
-                    running = False 
+        method = random.random()
+        print(method)
+        # flash red key
+        if( method <= 0.33 ):
+            # Draw the initial keyboard
+            init_keyboard(character,1,screen,flash_toggle)
+
+        # enlarge key
+        elif( method <= 0.66 ):
+            # Draw the initial keyboard
+            init_keyboard(character,2,screen,flash_toggle)
+        
+        # make keyboard disappear and flash one letter
+        else:
+            # Draw the initial keyboard
+            init_keyboard(character,3,screen,flash_toggle)
+
+        pg.time.wait(3000)
+        screen.fill((205, 205, 205))
+        pg.display.flip()
+        pg.time.wait(1000)
+        show_time = 0
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    running = False
+                #if event.key == pg.K_BACKSPACE:
+                #    del time_keys[-1]
+                if character in training_letters and event.key == character_key:
+                    time_keys.append([character, show_time])
+
+    print(time_keys)
+
+    
+
+    #letter_index = 0
+    #running = True
+    #while running:
+     #   for event in pg.event.get():
+      #      if event.type == pg.QUIT:
+       #         running = False
+        #        break
+         #   elif event.type == pg.KEYDOWN:
+          #      if event.key == keys[letter_index]:
+           #         time_keys.append([letters[letter_index], int(time.time() * 1000)])
+            #        letter_index += 1
+             #       letter_index %= len(letters)
+#
+ #               elif event.key == pg.K_ESCAPE:
+  #                  running = False
 
 try:
     start_window()
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
-finally:
-    with open("test.csv", "w") as fp:
-        for input in time_keys:
-            fp.write(f"{input[0]},{input[1]}\n")
+#finally:
+    #with open("test.csv", "w") as fp:
+     #   for input in time_keys:
+      #      fp.write(f"{input[0]},{input[1]}\n")

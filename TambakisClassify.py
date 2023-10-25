@@ -27,6 +27,7 @@ key_buffer = 0.95
 class create_keyboard(object):
     screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
     timeshowchar = 0
+    randomcharchoice1 = ''
     def flash_color(self, letter):
         flash_COLOR = RED   
         flash_time = 0.2
@@ -47,7 +48,8 @@ class create_keyboard(object):
                 alphabet.remove(letter)
 
         REDLETTER1 = random.choice(letters)
-        
+        self.randomcharchoice1 = REDLETTER1
+        ##print(self.randomcharchoice1)
         ##screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
         self.screen.fill((205, 205, 205))
 
@@ -79,11 +81,14 @@ class create_keyboard(object):
                 if(first):
                     x_offset += row_offset
                     pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+                    if(key==REDLETTER1):
+                        pg.draw.rect(self.screen,(255,255,255),pg.Rect(x_offset, y_offset, keySize, keySize))
                     first = False
                 
                 else:
                     pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
-
+                    if(key==REDLETTER1):
+                        pg.draw.rect(self.screen,(255,255,255),pg.Rect(x_offset, y_offset, keySize, keySize))
                 if(key==REDLETTER1):
                     self.screen.blit(font_keyboard.render(key, True, RED), (x_offset,y_offset))
                 if(key!=REDLETTER1):
@@ -117,26 +122,30 @@ def start_window():
     letter_index = 0
     running = True 
     ##show_time = end_time + random.randrange(5500, 6500)
+    keyboard.draw_board()
 
     while running:
         ##write a section that changes the flash
-
+        ##keyboard.draw_board()
         for event in pg.event.get():
             
-            keyboard.draw_board()
             
             if event.type == pg.QUIT:
                 running = False
                 break
             elif event.type == pg.KEYDOWN:
-                if event.key == keys[letter_index]:
-                    time_keys.append([letters[letter_index], keyboard.timeshowchar])
+                keycodetest = pg.key.key_code(keyboard.randomcharchoice1)
+                if event.key == keycodetest:
+                    time_keys.append([keyboard.randomcharchoice1, keyboard.timeshowchar])
+                    ##print(time_keys[1])
+                    keyboard.draw_board()
                     letter_index += 1
                     letter_index %= len(letters)
 
-                elif event.key == pg.K_ESCAPE:
+                if event.key == pg.K_ESCAPE:
                     running = False
-            time.sleep(3)
+        
+            #time.sleep(3)
         
     #text = render_font(letters[letter_index])
     #screen.blit(text, (50, 50))
@@ -145,7 +154,8 @@ def start_window():
 
 try:
     start_window()
-except:
+except Exception as e:
+    print(e.__str__())
     print("An error occurred. Please double check the file.")
 finally:
     with open("TambakisTest.csv", "w") as fp:

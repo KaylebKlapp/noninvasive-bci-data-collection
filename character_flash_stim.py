@@ -65,7 +65,9 @@ def get_random_color(min_range = 0, max_range = 220):
     return (random.randrange(min_range, max_range), random.randrange(min_range, max_range), random.randrange(min_range, max_range))
 
 # Using the font arrays declared earlier, we randomize just about everything with the font.
-def get_random_font(font, randomize_attributes = False):
+def get_random_font(randomize_attributes = False):
+    font_index = random.randint(0, len(fonts))
+    font = fonts[font_index]
     font_made = pygame.font.SysFont(font, random.randrange(400, 750))
     if (randomize_attributes):
         random_float = random.random()
@@ -127,7 +129,6 @@ def start_window():
             showing_character = True
             end_time = (time.time() * 1000) + length_of_flash
             character, character_key = get_random_letter_key_pair()
-            font_index = random.randint(0, len(fonts))
             font = get_random_font(font=fonts[font_index], randomize_attributes=True)
             color = get_random_color()
 

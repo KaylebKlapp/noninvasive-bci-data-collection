@@ -64,8 +64,8 @@ def get_random_font():
 def get_random_color(minimum_color = 50, maximum_color = 215):
     return (random.randint(minimum_color, maximum_color), random.randint(minimum_color, maximum_color), random.randint(minimum_color, maximum_color))
 
-def randomize_font(font, size, randomize_attributes = True):
-    font_made = pygame.font.SysFont(font, size)
+def randomize_font(font, randomize_attributes = True):
+    font_made = pygame.font.Font(None, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))
     if (randomize_attributes):
         random_float = random.random()
         if random_float < 0.20:
@@ -82,6 +82,8 @@ def randomize_font(font, size, randomize_attributes = True):
         random_float = random.random()
         if random_float < 0.20:
             pygame.font.Font.set_underline(font_made, True)
+        
+    return font_made
 
 def render_font(str, font, color):
     text = font.render(str, True, color)
@@ -97,11 +99,11 @@ def render_word(word, font, odd_char_color, odd_char_index):
     start_x = (SCREEN_WIDTH - len_word) // 2
 
     len_prev_chars = start_x
-
+    odd_font = randomize_font(font)
 
     for i in range(len(word)):
         if i == odd_char_index:
-            text = render_font(word[i], font, odd_char_color)
+            text = render_font(word[i], odd_font, odd_char_color)
         else:
             text = render_font(word[i], font, NORMAL_CHAR_COLOR)
 

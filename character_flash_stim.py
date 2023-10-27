@@ -98,7 +98,7 @@ def start_window():
     font_index = random.randint(0, len(fonts))
     pygame.display.set_caption("BCI training")
     screen = pygame.display.set_mode((screen_width, screen_height))
-    font = get_random_font(font=fonts[font_index], randomize_attributes=True)
+    font = get_random_font(randomize_attributes=True)
     color = get_random_color()
     
     """
@@ -114,7 +114,7 @@ def start_window():
     # Randomizing for the first character
     character, character_key = get_random_letter_key_pair()
     font_index = random.randint(0, len(fonts))
-    font = get_random_font(font=fonts[font_index], randomize_attributes=True)
+    font = get_random_font(randomize_attributes=True)
     color = get_random_color()
     
     running = True
@@ -129,7 +129,7 @@ def start_window():
             showing_character = True
             end_time = (time.time() * 1000) + length_of_flash
             character, character_key = get_random_letter_key_pair()
-            font = get_random_font(font=fonts[font_index], randomize_attributes=True)
+            font = get_random_font(randomize_attributes=True)
             color = get_random_color()
 
             # Some portion of the time, we want to pause for an extended period of time.

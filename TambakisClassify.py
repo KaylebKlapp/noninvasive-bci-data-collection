@@ -10,6 +10,8 @@ import tkinter as tk
 pg.init()
 pg.font.init()
 RED = (255,0,0)
+WHITE = (255, 255, 255)
+BLACK = (0,0,0)
 
 time_keys = []
 letters = ['K', 'W', 'E']
@@ -25,9 +27,12 @@ key_buffer = 0.95
 
 
 class create_keyboard(object):
+
     screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
     timeshowchar = 0
     randomcharchoice1 = ''
+    keyboard = [[] for i in range(5)]
+
     def flash_color(self, letter):
         flash_COLOR = RED   
         flash_time = 0.2
@@ -38,36 +43,39 @@ class create_keyboard(object):
         pg.display.flip()  # Update the display
         time.sleep(flash_time)  # Wait for the flash to disappear
 
-    def draw_board(self):
-        keyboard = [[] for i in range(5)]
+    def randomize_board(self):
+        self.keyboard = [[] for i in range(5)]
         alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
-        for index, key_row in enumerate(keyboard):
+        for index, key_row in enumerate(self.keyboard):
             key_row = random.sample(alphabet,5)
-            keyboard[index] = key_row
+            self.keyboard[index] = key_row
             for letter in key_row:
                 alphabet.remove(letter)
 
         REDLETTER1 = random.choice(letters)
         self.randomcharchoice1 = REDLETTER1
+
+
+    def draw_board(self, color_for_diff_letter = RED, color_for_diff_box = (255, 255, 255)):
         ##print(self.randomcharchoice1)
         ##screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
         self.screen.fill((205, 205, 205))
 
         width, height = pg.display.get_surface().get_size()
         max = 0
-        for row in keyboard:
+        for row in self.keyboard:
             if(row.__len__() > max):
                 max = row.__len__()
 
-        num_rows = keyboard.__len__()
-        key_size = width/max
+        num_rows = len(self.keyboard)
+        key_size = width
         if( (key_size * num_rows) > height ):
             key_size = height/max
 
         x_offset = height*0.005
-        y_offset = (height-(key_size*keyboard.__len__()))/2
+        y_offset = (height-(key_size*num_rows))/2
 
-        for row in keyboard:
+        for row in self.keyboard:
             num_keys = row.__len__()
             if(num_keys == max ):
                 row_offset = 0
@@ -80,18 +88,17 @@ class create_keyboard(object):
             for key in row:
                 if(first):
                     x_offset += row_offset
-                    pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
-                    if(key==REDLETTER1):
-                        pg.draw.rect(self.screen,(255,255,255),pg.Rect(x_offset, y_offset, keySize, keySize))
+                    pg.draw.rect(self.screen, key_color, pg.Rect(x_offset, y_offset, keySize, keySize))
+                    if(key==self.randomcharchoice1):
+                        pg.draw.rect(self.screen, color_for_diff_box, pg.Rect(x_offset, y_offset, keySize, keySize))
                     first = False
-                
                 else:
-                    pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
-                    if(key==REDLETTER1):
-                        pg.draw.rect(self.screen,(255,255,255),pg.Rect(x_offset, y_offset, keySize, keySize))
-                if(key==REDLETTER1):
-                    self.screen.blit(font_keyboard.render(key, True, RED), (x_offset,y_offset))
-                if(key!=REDLETTER1):
+                    pg.draw.rect(self.screen, key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+                    if(key==self.randomcharchoice1):
+                        pg.draw.rect(self.screen, color_for_diff_box, pg.Rect(x_offset, y_offset, keySize, keySize))
+                if(key==self.randomcharchoice1):
+                    self.screen.blit(font_keyboard.render(key, True, color_for_diff_letter), (x_offset,y_offset))
+                else:
                     self.screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
 
                 ##random_letter = random.choice(letters)
@@ -107,12 +114,10 @@ class create_keyboard(object):
         font_keyboard2 = pg.font.SysFont("Alata", 40)
         ##random_letter = random.choice(letters)
         self.screen.blit(font_keyboard2.render('START TEST', True, font_color), (width/2+225, height/2))
-
-        pg.display.flip()
-        self.timeshowchar = time.time()*1000
         
     def __init__(self):
-        self.draw_board
+        self.randomize_board()
+        self.draw_board()
 
 def start_window():
     pg.display.set_caption("BCI training")
@@ -121,7 +126,6 @@ def start_window():
     ##random_letter = random.choice(letters)
     letter_index = 0
     running = True 
-    ##show_time = end_time + random.randrange(5500, 6500)
     keyboard.draw_board()
 
     while running:
@@ -134,6 +138,7 @@ def start_window():
                 running = False
                 break
             elif event.type == pg.KEYDOWN:
+                keyboard.randomize_board()
                 keycodetest = pg.key.key_code(keyboard.randomcharchoice1)
                 if event.key == keycodetest:
                     time_keys.append([keyboard.randomcharchoice1, keyboard.timeshowchar])
@@ -144,6 +149,15 @@ def start_window():
 
                 if event.key == pg.K_ESCAPE:
                     running = False
+
+        if (int(time.time() * 2) % 2 == 0):
+            keyboard.draw_board(color_for_diff_box=BLACK, color_for_diff_letter=WHITE)
+        else:
+            keyboard.draw_board(color_for_diff_box=RED, color_for_diff_letter=BLACK)
+        
+
+
+        pg.display.flip()
         
             #time.sleep(3)
         

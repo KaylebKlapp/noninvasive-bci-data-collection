@@ -17,6 +17,12 @@ keys = [pg.K_k, pg.K_w, pg.K_e]
 font_color = (255,255,255)
 key_color = (0,0,0)
 key_buffer = 0.95
+date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
+collection_type = "checkerboard"
+subject_name = "Aristomenes"
+more_info = ""
+
+file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}.txt"
 
 #keyboard = [
  #           [pg.K_q,pg.K_w,pg.K_e,pg.K_r,pg.K_t,pg.K_y,pg.K_u,pg.K_i,pg.K_o,pg.K_p],
@@ -28,16 +34,11 @@ class create_keyboard(object):
     screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
     timeshowchar = 0
     randomcharchoice1 = ''
-    def flash_color(self, letter):
-        flash_COLOR = RED   
-        flash_time = 0.2
-        font_keyboard = pg.font.SysFont("Alata", 60)
-        self.screen.fill((205, 205, 205))  # Clear the screen
-        pg.draw.rect(self.screen, key_color, pg.Rect(100, 100, 60, 60))  # Draw a key
-        self.screen.blit(font_keyboard.render(letter, True, flash_COLOR), (50, 50))  # Flash the letter
-        pg.display.flip()  # Update the display
-        time.sleep(flash_time)  # Wait for the flash to disappear
-
+    square_locationx, square_locationy = (0,0)
+    keysizeclass= 0
+    
+    def randomizeboard(self): 
+        pass
     def draw_board(self):
         keyboard = [[] for i in range(5)]
         alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
@@ -89,6 +90,8 @@ class create_keyboard(object):
                     pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
                     if(key==REDLETTER1):
                         pg.draw.rect(self.screen,(255,255,255),pg.Rect(x_offset, y_offset, keySize, keySize))
+                        self.square_locationx, self.square_locationy = (x_offset,y_offset)
+                        self.keysizeclass = keySize
                 if(key==REDLETTER1):
                     self.screen.blit(font_keyboard.render(key, True, RED), (x_offset,y_offset))
                 if(key!=REDLETTER1):
@@ -108,11 +111,11 @@ class create_keyboard(object):
         ##random_letter = random.choice(letters)
         self.screen.blit(font_keyboard2.render('START TEST', True, font_color), (width/2+225, height/2))
 
-        pg.display.flip()
+       
         self.timeshowchar = time.time()*1000
-        
+        pg.display.flip()
     def __init__(self):
-        self.draw_board
+        self.draw_board()
 
 def start_window():
     pg.display.set_caption("BCI training")
@@ -128,17 +131,29 @@ def start_window():
         ##write a section that changes the flash
         ##keyboard.draw_board()
         for event in pg.event.get():
-            
-            
+           
             if event.type == pg.QUIT:
                 running = False
                 break
-            elif event.type == pg.KEYDOWN:
+            #for i in range(250*2):
+                ##pg.draw.rect(keyboard.screen,(255,255,255) ,pg.Rect(keyboard.square_locationx, keyboard.square_locationy, keyboard.keysizeclass, keyboard.keysizeclass))
+                ##keyboard.screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
+                ##pg.display.flip()
+                ##pg.time.wait(250)
+            if event.type == pg.KEYDOWN:
                 keycodetest = pg.key.key_code(keyboard.randomcharchoice1)
                 if event.key == keycodetest:
                     time_keys.append([keyboard.randomcharchoice1, keyboard.timeshowchar])
                     ##print(time_keys[1])
                     keyboard.draw_board()
+                    ##callrandomize board here
+                    if ((time.time())*3) % 2 ==0 :
+                        
+                        pg.draw.rect(keyboard.screen,(0,0,0),pg.Rect(keyboard.square_locationx, keyboard.square_locationy, keyboard.keysizeclass, keyboard.keysizeclass))
+                        pg.display.flip()
+                    ##else:
+                        ##pg.draw.rect(keyboard.screen,(255,255,255),pg.Rect(keyboard.square_locationx, keyboard.square_locationy, keyboard.keysizeclass, keyboard.keysizeclass))
+                    
                     letter_index += 1
                     letter_index %= len(letters)
 

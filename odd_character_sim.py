@@ -65,7 +65,7 @@ def get_random_color(minimum_color = 50, maximum_color = 215):
     return (random.randint(minimum_color, maximum_color), random.randint(minimum_color, maximum_color), random.randint(minimum_color, maximum_color))
 
 def randomize_font(font, randomize_attributes = True):
-    font_made = pygame.font.Font(None, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))
+    font_made = pygame.font.Font(None, font.get_height())
     if (randomize_attributes):
         random_float = random.random()
         if random_float < 0.20:
@@ -89,7 +89,7 @@ def render_font(str, font, color):
     text = font.render(str, True, color)
     return text
 
-def render_word(word, font, odd_char_color, odd_char_index):
+def render_word(word, font, odd_font, odd_char_color, odd_char_index):
     len_word = 0  # Initialize the total width of the word
     for letter in word:
         text = render_font(letter, font, NORMAL_CHAR_COLOR)
@@ -99,7 +99,6 @@ def render_word(word, font, odd_char_color, odd_char_index):
     start_x = (SCREEN_WIDTH - len_word) // 2
 
     len_prev_chars = start_x
-    odd_font = randomize_font(font)
 
     for i in range(len(word)):
         if i == odd_char_index:
@@ -120,6 +119,7 @@ def start_window():
 
     sys_font = get_random_font()
     font = pygame.font.SysFont(sys_font, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))    #Font
+    odd_font = randomize_font(font) #Font
     
     #letter_index = 0
     running = True;
@@ -134,6 +134,7 @@ def start_window():
                 odd_char_index = random.randint(0,len(word)-1)
                 sys_font = get_random_font()
                 font = pygame.font.SysFont(sys_font, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))
+                odd_font = randomize_font(font)
 
                 """
                 if event.key == pygame.K_RETURN:
@@ -147,7 +148,7 @@ def start_window():
                     letter_index %= len(training_letters)
                 """
         SCREEN.fill((205, 205, 205))
-        render_word(word, font, odd_char_color, odd_char_index)
+        render_word(word, font, odd_font, odd_char_color, odd_char_index)
         pygame.display.flip();                    
 
 start_window()

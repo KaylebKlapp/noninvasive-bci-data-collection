@@ -19,6 +19,12 @@ keys = [pg.K_k, pg.K_w, pg.K_e]
 font_color = (255,255,255)
 key_color = (0,0,0)
 key_buffer = 0.95
+date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
+collection_type = "checkerboard"
+subject_name = "Aristomenes"
+more_info = ""
+
+file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}.txt"
 
 #keyboard = [
  #           [pg.K_q,pg.K_w,pg.K_e,pg.K_r,pg.K_t,pg.K_y,pg.K_u,pg.K_i,pg.K_o,pg.K_p],
@@ -45,6 +51,13 @@ class create_keyboard(object):
 
     def randomize_board(self):
         self.keyboard = [[] for i in range(5)]
+    square_locationx, square_locationy = (0,0)
+    keysizeclass= 0
+    
+    def randomizeboard(self): 
+        pass
+    def draw_board(self):
+        keyboard = [[] for i in range(5)]
         alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
         for index, key_row in enumerate(self.keyboard):
             key_row = random.sample(alphabet,5)
@@ -99,6 +112,14 @@ class create_keyboard(object):
                 if(key==self.randomcharchoice1):
                     self.screen.blit(font_keyboard.render(key, True, color_for_diff_letter), (x_offset,y_offset))
                 else:
+                    pg.draw.rect(self.screen,key_color,pg.Rect(x_offset, y_offset, keySize, keySize))
+                    if(key==REDLETTER1):
+                        pg.draw.rect(self.screen,(255,255,255),pg.Rect(x_offset, y_offset, keySize, keySize))
+                        self.square_locationx, self.square_locationy = (x_offset,y_offset)
+                        self.keysizeclass = keySize
+                if(key==REDLETTER1):
+                    self.screen.blit(font_keyboard.render(key, True, RED), (x_offset,y_offset))
+                if(key!=REDLETTER1):
                     self.screen.blit(font_keyboard.render(key, True, font_color), (x_offset,y_offset))
 
                 ##random_letter = random.choice(letters)
@@ -114,7 +135,10 @@ class create_keyboard(object):
         font_keyboard2 = pg.font.SysFont("Alata", 40)
         ##random_letter = random.choice(letters)
         self.screen.blit(font_keyboard2.render('START TEST', True, font_color), (width/2+225, height/2))
-        
+
+       
+        self.timeshowchar = time.time()*1000
+        pg.display.flip()
     def __init__(self):
         self.randomize_board()
         self.draw_board()
@@ -132,8 +156,7 @@ def start_window():
         ##write a section that changes the flash
         ##keyboard.draw_board()
         for event in pg.event.get():
-            
-            
+           
             if event.type == pg.QUIT:
                 running = False
                 break
@@ -144,6 +167,14 @@ def start_window():
                     time_keys.append([keyboard.randomcharchoice1, keyboard.timeshowchar])
                     ##print(time_keys[1])
                     keyboard.draw_board()
+                    ##callrandomize board here
+                    if ((time.time())*3) % 2 ==0 :
+                        
+                        pg.draw.rect(keyboard.screen,(0,0,0),pg.Rect(keyboard.square_locationx, keyboard.square_locationy, keyboard.keysizeclass, keyboard.keysizeclass))
+                        pg.display.flip()
+                    ##else:
+                        ##pg.draw.rect(keyboard.screen,(255,255,255),pg.Rect(keyboard.square_locationx, keyboard.square_locationy, keyboard.keysizeclass, keyboard.keysizeclass))
+                    
                     letter_index += 1
                     letter_index %= len(letters)
 

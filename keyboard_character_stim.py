@@ -228,7 +228,8 @@ def start_window():
         print(method)
         # flash red key
         if( method <= 0.33 ):
-            # Draw the initial keyboard
+            # Draw the initial keyboard            screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
+
             init_keyboard(character,1,screen,flash_toggle)
 
         # enlarge key

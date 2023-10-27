@@ -57,13 +57,26 @@ def render_font(str, font, color):
     return text
 
 def render_word(word, odd_char_color, odd_char_index):
+    len_word = 0  # Initialize the total width of the word
+    for letter in word:
+        text = render_font(letter, FONT, NORMAL_CHAR_COLOR)
+        len_word += text.get_width()
+
+    # Calculate the starting x-coordinate to center the word
+    start_x = (SCREEN_WIDTH - len_word) // 2
+
+    len_prev_chars = start_x
+
+
     for i in range(len(word)):
         if i == odd_char_index:
             text = render_font(word[i], FONT, odd_char_color)
-            SCREEN.blit(text, (i*15+25, SCREEN_HEIGHT/2))
         else:
             text = render_font(word[i], FONT, NORMAL_CHAR_COLOR)
-            SCREEN.blit(text, (i*15+25, SCREEN_HEIGHT/2))
+
+        len_letter = text.get_width()
+        SCREEN.blit(text, (len_prev_chars, SCREEN_HEIGHT/2))
+        len_prev_chars += len_letter
 
 def start_window():
 
@@ -83,7 +96,6 @@ def start_window():
                 odd_char_color = get_random_color()
                 word = get_random_word(word_bank)
                 odd_char_index = random.randint(0,len(word)-1)
-                print(odd_char_index)
 
                 """
                 if event.key == pygame.K_RETURN:
@@ -111,3 +123,21 @@ finally:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")
 """
+def randomize_font(font, randomize_attributes = False):
+    font_made = pygame.font.SysFont(font, random.randrange(400, 750))
+    if (randomize_attributes):
+        random_float = random.random()
+        if random_float < 0.20:
+            pygame.font.Font.set_bold(font_made, True)
+        
+        random_float = random.random()
+        if random_float < 0.20:
+            pygame.font.Font.set_italic(font_made, True)
+        
+        random_float = random.random()
+        if random_float < 0.20:
+            pygame.font.Font.set_strikethrough(font_made, True)
+
+        random_float = random.random()
+        if random_float < 0.20:
+            pygame.font.Font.set_underline(font_made, True)

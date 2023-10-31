@@ -2,6 +2,18 @@
 
 import pygame as pg
 import random
+from datetime import datetime
+import time
+
+date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
+collection_type = "keyboard_stim"
+subject_name = "jayden"
+more_info = ""
+
+date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
+collection_type = "keyboard_stim"
+subject_name = "jayden"
+more_info = ""
 
 pg.init()
 pg.font.init()
@@ -41,7 +53,7 @@ nontraining_letters = alphabet
 
 for let in training_letters:
     nontraining_letters.remove(let)
-    
+
 def get_random_letter_key_pair():
     if (random.random() <= training_key_percentage):
         rand_index = random.randint(0,2)
@@ -120,10 +132,8 @@ def flash_keys(original, screen, key, x_offset, y_offset, size, font_keyboard, k
             original = True
 
 
-
-
-
 def init_keyboard(char, method, screen, flash):
+    char_row_and_col = (0,0)
 
     # Determine the key size and offset to center the keyboard
     x_offset, y_offset, max_columns, key_size = determine_keysize_and_offset()
@@ -208,13 +218,7 @@ def init_keyboard(char, method, screen, flash):
 
     pg.display.flip()
 
-        
-
-
-
-
-
-
+       
 def start_window():
 
     # Initialize the screen
@@ -229,7 +233,8 @@ def start_window():
         print(method)
         # flash red key
         if( method <= 0.33 ):
-            # Draw the initial keyboard
+            # Draw the initial keyboard            screen.blit(font_keyboard.render(key[0], True, fontColor), (x_offset,y_offset))
+
             init_keyboard(character,1,screen,flash_toggle)
 
         # enlarge key
@@ -241,12 +246,12 @@ def start_window():
         else:
             # Draw the initial keyboard
             init_keyboard(character,3,screen,flash_toggle)
+        show_time = time.time() * 1000
 
         pg.time.wait(3000)
         screen.fill((205, 205, 205))
         pg.display.flip()
         pg.time.wait(1000)
-        show_time = 0
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
@@ -259,12 +264,17 @@ def start_window():
 
     print(time_keys)
 
+time_end_training = 0
+time_start_training = int(time.time() * 1000)
+
 try:
     start_window()
+    time_end_training = int(time.time() * 1000)
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
-#finally:
- #   with open("JaydenData.csv", "w") as fp:
-  #      for input in time_keys:
-   #         fp.write(f"{input[0]},{input[1]}\n")
+finally:
+    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
+    with open(file_name, "w") as fp:
+        for input in time_keys:
+            fp.write(f"{input[0]},{input[1]}\n")

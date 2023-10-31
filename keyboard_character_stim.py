@@ -1,7 +1,5 @@
-import time
-from datetime import datetime
-import brainflow as bf
-import numpy as np
+# Keyboard stimulus
+
 import pygame as pg
 import random
 
@@ -253,6 +251,7 @@ def start_window():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     running = False
+                    break
                 #if event.key == pg.K_BACKSPACE:
                 #    del time_keys[-1]
                 if character in training_letters and event.key == character_key:
@@ -260,30 +259,12 @@ def start_window():
 
     print(time_keys)
 
-    
-
-    #letter_index = 0
-    #running = True
-    #while running:
-     #   for event in pg.event.get():
-      #      if event.type == pg.QUIT:
-       #         running = False
-        #        break
-         #   elif event.type == pg.KEYDOWN:
-          #      if event.key == keys[letter_index]:
-           #         time_keys.append([letters[letter_index], int(time.time() * 1000)])
-            #        letter_index += 1
-             #       letter_index %= len(letters)
-#
- #               elif event.key == pg.K_ESCAPE:
-  #                  running = False
-
 try:
     start_window()
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
 #finally:
-    #with open("test.csv", "w") as fp:
-     #   for input in time_keys:
-      #      fp.write(f"{input[0]},{input[1]}\n")
+ #   with open("JaydenData.csv", "w") as fp:
+  #      for input in time_keys:
+   #         fp.write(f"{input[0]},{input[1]}\n")

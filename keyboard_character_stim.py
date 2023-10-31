@@ -10,11 +10,6 @@ collection_type = "keyboard_stim"
 subject_name = "jayden"
 more_info = ""
 
-date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
-collection_type = "keyboard_stim"
-subject_name = "jayden"
-more_info = ""
-
 pg.init()
 pg.font.init()
 

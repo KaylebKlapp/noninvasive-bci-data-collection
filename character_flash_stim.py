@@ -57,7 +57,7 @@ def get_random_letter_key_pair():
     if (random.random() <= .50):
         rand_index = random.randint(0,len(training_keys))
     else:
-        return nontraining_letters[random.randrange(0, len(nontraining_letters))], None
+        return nontraining_letters[random.randrange(0, len(nontraining_letters) - 1)], None
     return (training_letters[rand_index], training_keys[rand_index])
 
 # Get a random color, decreasing the max color makes the letters darker, increasing min makes it lighter
@@ -166,10 +166,11 @@ def start_window():
 
 time_end_training = 0
 time_start_training = int(time.time() * 1000)
+start_window()
+time_end_training = int(time.time() * 1000)
 
 try:
-    start_window()
-    time_end_training = int(time.time() * 1000)
+    pass
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")

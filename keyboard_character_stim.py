@@ -2,63 +2,20 @@
 
 import pygame as pg
 import random
-from datetime import datetime
 import time
 
-date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
-collection_type = "keyboard_stim"
-subject_name = "jayden"
-more_info = ""
+# Change based on the type of keyboard you want
+from keyboard_and_program_style_1 import *
 
 pg.init()
 pg.font.init()
-
-time_keys = []
-LETTERS = ['K', 'W', 'E']
-KEYS = [pg.K_k, pg.K_w, pg.K_e]
-FONT_COLOR = (255,255,255)
-KEY_COLOR = (0,0,0)
-FLASH_COLOR = (255,0,0)
-SCREEN_BACKGROUND = ((205,205,205))
-KEY_BUFFER = 0.95
-KEYBOARD_FONT = "Alata"
-ENLARGE_KEY_SIZE = 2
-ENLARGE_LETTER_SIZE = 1.5
-FLASH = True
-SHOW_TIME = time.time() * 1000
-SHUFFLE_FREQUENCY = 3
-#DELAY_BETWEEN_CHARS_MS = 5000
-
-TRAINING_KEY_PERCENTAGE = 0.75
-
-#keyboard = [
- #           ['Q','W','E','R','T','Y','U','I','O','P'],
-  #          ['A','S','D','F','G','H','J','K','L'],
-   #         ['Z','X','C','V','B','N','M']
-#]
-
-# [character, size, coordinate]
-keyboard = [
-            [['Q',0,tuple],['W',0,tuple],['E',0,tuple],['R',0,tuple],['T',0,tuple],['Y',0,tuple],['U',0,tuple],['I',0,tuple],['O',0,tuple],['P',0,tuple]],
-            [['A',0,tuple],['S',0,tuple],['D',0,tuple],['F',0,tuple],['G',0,tuple],['H',0,tuple],['J',0,tuple],['K',0,tuple],['L',0,tuple]],
-            [['Z',0,tuple],['X',0,tuple],['C',0,tuple],['V',0,tuple],['B',0,tuple],['N',0,tuple],['M',0,tuple]]
-]
-
-training_letters = ['K', 'W', 'E']
-training_keys = [pg.key.key_code(letter) for letter in training_letters]
-
-alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
-nontraining_letters = alphabet
-
-for let in training_letters:
-    nontraining_letters.remove(let)
 
 def get_random_letter_key_pair():
     if (random.random() <= TRAINING_KEY_PERCENTAGE):
         rand_index = random.randint(0,2)
     else:
         return nontraining_letters[random.randrange(0, len(nontraining_letters))], None
-    return (training_letters[rand_index], training_keys[rand_index])
+    return (LETTERS[rand_index], training_keys[rand_index])
 
 def determine_keysize_and_offset():
     # Find the width and height of the screen the program is run on
@@ -123,21 +80,6 @@ def draw_key(screen, key, x_offset, y_offset, size, draw, font_keyboard):
         # Draw the keys
         pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offset, y_offset, size, size))
         screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
-
-##def flash_keys(original, screen, key, x_offset, y_offset, size, font_keyboard):
-  #  for i in range(FLASH_NUM*2):
-   #     if(original):
-    #        # Draw the keys
-     #       pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offset, y_offset, size, size))
-      #      screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
-       #     pg.display.flip()
-        #    original = False
-        #else:
-         #   # Draw the keys
-          #  pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offset, y_offset, size, size))
-           # screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
-            #pg.display.flip()
-            #original = True
 
 def perform_method(method, char_row_and_col, screen, font_keyboard):
     charRow = char_row_and_col[0]
@@ -260,10 +202,13 @@ def start_window():
     pg.display.set_caption("BCI training")
     screen = initialize_screen()
 
-    time_until_next_stim = random.randint(1500,3000)
-    delay_between_chars_ms = random.randint(2000,5000)
+    time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_START,TIME_UNTIL_NEXT_STIM_CONST_END)
+    delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_START,TIME_BETWEEN_CHARS_CONST_END)
     character, character_key = get_random_letter_key_pair()
-    method = random.randint(1,3)
+    if(RANDOM_METHOD or METHOD not in range(1,4)):
+        method = random.randint(1,3)
+    else:
+        method = METHOD
     char_row_and_col, font_keyboard = init_keyboard(character,screen)
     pg.time.wait(time_until_next_stim)
     show_next_char_time = time.time()*1000 + delay_between_chars_ms
@@ -272,13 +217,17 @@ def start_window():
     running = True
     while running:
         if (time.time()*1000 > show_next_char_time):
-            time_until_next_stim = random.randint(1500,3000)
-            delay_between_chars_ms = random.randint(2000,5000)
+            time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_START,TIME_UNTIL_NEXT_STIM_CONST_END)
+            delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_START,TIME_BETWEEN_CHARS_CONST_END)
             character, character_key = get_random_letter_key_pair()
-            method = random.randint(1,3)
+            if(RANDOM_METHOD or METHOD not in range(1,4)):
+                method = random.randint(1,3)
+            else:
+                method = METHOD
             char_row_and_col, font_keyboard = init_keyboard(character,screen)
             pg.time.wait(time_until_next_stim)
             show_next_char_time = time.time()*1000 + delay_between_chars_ms
+            show_time = time.time()
             print(method, character, char_row_and_col)
 
         for event in pg.event.get():
@@ -288,8 +237,8 @@ def start_window():
                     break
                 if event.key == pg.K_BACKSPACE:
                     del time_keys[-1]
-                if character in training_letters and event.key == character_key:
-                    time_keys.append([character, SHOW_TIME]) # fix show_time
+                if character in LETTERS and event.key == character_key:
+                    time_keys.append([character, show_time]) # fix show_time
 
         perform_method(method, char_row_and_col, screen, font_keyboard)
 
@@ -306,8 +255,8 @@ try:
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
-#finally:
- #   file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
-  #  with open(file_name, "w") as fp:
-   #     for input in time_keys:
-    #        fp.write(f"{input[0]},{input[1]}\n")
+finally:
+    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
+    with open(file_name, "w") as fp:
+        for input in time_keys:
+            fp.write(f"{input[0]},{input[1]}\n")

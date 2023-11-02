@@ -238,7 +238,7 @@ def start_window():
                 if event.key == pg.K_BACKSPACE:
                     del time_keys[-1]
                 if character in LETTERS and event.key == character_key:
-                    time_keys.append([character, show_time]) # fix show_time
+                    time_keys.append([character, show_time])
 
         perform_method(method, char_row_and_col, screen, font_keyboard)
 
@@ -255,8 +255,8 @@ try:
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
-finally:
-    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
-    with open(file_name, "w") as fp:
-        for input in time_keys:
-            fp.write(f"{input[0]},{input[1]}\n")
+#finally:
+ #   file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
+  #  with open(file_name, "w") as fp:
+   #     for input in time_keys:
+    #        fp.write(f"{input[0]},{input[1]}\n")

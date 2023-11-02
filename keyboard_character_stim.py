@@ -13,20 +13,21 @@ more_info = ""
 pg.init()
 pg.font.init()
 
-TIME_KEYS = []
+time_keys = []
 LETTERS = ['K', 'W', 'E']
 KEYS = [pg.K_k, pg.K_w, pg.K_e]
 FONT_COLOR = (255,255,255)
 KEY_COLOR = (0,0,0)
 FLASH_COLOR = (255,0,0)
-FLASH_NUM = 5
-FLASH_DELAY = 250
+SCREEN_BACKGROUND = ((205,205,205))
 KEY_BUFFER = 0.95
 KEYBOARD_FONT = "Alata"
+ENLARGE_KEY_SIZE = 2
+ENLARGE_LETTER_SIZE = 1.5
 FLASH = True
 SHOW_TIME = time.time() * 1000
 SHUFFLE_FREQUENCY = 3
-DELAY_BETWEEN_CHARS_MS = 700
+#DELAY_BETWEEN_CHARS_MS = 5000
 
 TRAINING_KEY_PERCENTAGE = 0.75
 
@@ -101,34 +102,44 @@ def determine_row_stagger_size(row, max_columns, key_size):
 
 def initialize_screen():
     screen = pg.display.set_mode((0,0), pg.FULLSCREEN)
-    screen.fill((205, 205, 205))
+    screen.fill(SCREEN_BACKGROUND)
     return screen
 
-def draw_keys(screen, key, x_offset, y_offset, size, draw, font_keyboard):
+def draw_keyboard(screen, font_keyboard):
     # Change the font size to match that of the keys it will sit on
+    screen.fill(SCREEN_BACKGROUND)
+    for row in range(keyboard.__len__()):
+        for col in range(keyboard[row].__len__()):
+            char = keyboard[row][col][0]
+            x_offset = keyboard[row][col][2][0]
+            y_offset = keyboard[row][col][2][1]
+            size = keyboard[row][col][1]
+            # Draw the keys
+            pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offset, y_offset, size, size))
+            screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offset, y_offset))
+
+def draw_key(screen, key, x_offset, y_offset, size, draw, font_keyboard):
     if(draw):
         # Draw the keys
         pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offset, y_offset, size, size))
         screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
 
-def flash_keys(original, screen, key, x_offset, y_offset, size, font_keyboard):
-    for i in range(FLASH_NUM*2):
-        if(original):
-            # Draw the keys
-            pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offset, y_offset, size, size))
-            screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
-            pg.display.flip()
-            pg.time.wait(FLASH_DELAY)
-            original = False
-        else:
-            # Draw the keys
-            pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offset, y_offset, size, size))
-            screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
-            pg.display.flip()
-            pg.time.wait(FLASH_DELAY)
-            original = True
+##def flash_keys(original, screen, key, x_offset, y_offset, size, font_keyboard):
+  #  for i in range(FLASH_NUM*2):
+   #     if(original):
+    #        # Draw the keys
+     #       pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offset, y_offset, size, size))
+      #      screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
+       #     pg.display.flip()
+        #    original = False
+        #else:
+         #   # Draw the keys
+          #  pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offset, y_offset, size, size))
+           # screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
+            #pg.display.flip()
+            #original = True
 
-def perform_method(method, char_row_and_col, flash, screen, font_keyboard):
+def perform_method(method, char_row_and_col, screen, font_keyboard):
     charRow = char_row_and_col[0]
     charCol = char_row_and_col[1]
     x_offsetChar = keyboard[charRow][charCol][2][0]
@@ -136,77 +147,52 @@ def perform_method(method, char_row_and_col, flash, screen, font_keyboard):
     char = keyboard[charRow][charCol][0]
     size = keyboard[charRow][charCol][1]
     if( method == 1 ):
-        if(flash):
+        if(FLASH):
             if (int(time.time() * 4) % 2 == 0):
                 # Draw the keys
                 pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-                pg.display.flip()
-                pg.time.wait(FLASH_DELAY)
                     
             else:
                 # Draw the keys
                 pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-                pg.display.flip()
-                pg.time.wait(FLASH_DELAY)
         else:
             pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
             screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-            pg.display.flip()
-            pg.time.wait(FLASH_DELAY)
 
     elif( method == 2 ):
-        pg.time.wait(1000)
-        size = keyboard[charRow][charCol][1] * 2
-        font_keyboard = pg.font.SysFont(KEYBOARD_FONT, int(size*2))
-        if(flash):
+        size = keyboard[charRow][charCol][1] * ENLARGE_KEY_SIZE
+        font_keyboard = pg.font.SysFont(KEYBOARD_FONT, int(size*ENLARGE_LETTER_SIZE))
+        if(FLASH):
             if (int(time.time() * 4) % 2 == 0):
                 # Draw the keys
                 pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-                pg.display.flip()
-                pg.time.wait(FLASH_DELAY)
                     
             else:
                 # Draw the keys
                 pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-                pg.display.flip()
-                pg.time.wait(FLASH_DELAY)
         else:
             pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
             screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-            pg.display.flip()
-            pg.time.wait(FLASH_DELAY)
 
     elif( method == 3 ):
-        pg.time.wait(1000)
-        screen.fill((205,205,205))
-        #pg.display.flip()
-        #pg.time.wait(500)
-        
-        if(flash):
+        screen.fill(SCREEN_BACKGROUND)
+        if(FLASH):
             if (int(time.time() * 4) % 2 == 0):
                 # Draw the keys
                 pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-                pg.display.flip()
-                pg.time.wait(FLASH_DELAY)
                     
             else:
                 # Draw the keys
                 pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-                pg.display.flip()
-                pg.time.wait(FLASH_DELAY)
         else:
             pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
             screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
-            pg.display.flip()
-            pg.time.wait(FLASH_DELAY)
-
-        draw_keys(screen,keyboard[charRow][charCol],x_offsetChar,y_offsetChar,size,True)
 
     pg.display.flip()
 
@@ -215,6 +201,7 @@ def perform_method(method, char_row_and_col, flash, screen, font_keyboard):
 
 
 def init_keyboard(char, screen):
+    screen.fill(SCREEN_BACKGROUND)
     char_row_and_col = (0,0)
 
     # Determine the key size and offset to center the keyboard
@@ -249,7 +236,7 @@ def init_keyboard(char, screen):
             if( keyboard[row][key][0] == char ):
                 char_row_and_col = (row, key)
 
-            draw_keys(screen,keyboard[row][key],x_offset,y_offset,keySize,True,font_keyboard)
+            draw_key(screen,keyboard[row][key],x_offset,y_offset,keySize,True,font_keyboard)
 
             # Iterate the x_offset based on the size of the keys
             x_offset += key_size
@@ -273,37 +260,40 @@ def start_window():
     pg.display.set_caption("BCI training")
     screen = initialize_screen()
 
+    time_until_next_stim = random.randint(1500,3000)
+    delay_between_chars_ms = random.randint(2000,5000)
     character, character_key = get_random_letter_key_pair()
-    method = random.random()
+    method = random.randint(1,3)
     char_row_and_col, font_keyboard = init_keyboard(character,screen)
+    pg.time.wait(time_until_next_stim)
+    show_next_char_time = time.time()*1000 + delay_between_chars_ms
+    print(method, character, char_row_and_col)
 
-    show_next_char_time = time.time()*1000 + DELAY_BETWEEN_CHARS_MS
     running = True
     while running:
         if (time.time()*1000 > show_next_char_time):
+            time_until_next_stim = random.randint(1500,3000)
+            delay_between_chars_ms = random.randint(2000,5000)
             character, character_key = get_random_letter_key_pair()
-            method = random.random()
-            show_next_char_time = time.time()*1000 + DELAY_BETWEEN_CHARS_MS
+            method = random.randint(1,3)
+            char_row_and_col, font_keyboard = init_keyboard(character,screen)
+            pg.time.wait(time_until_next_stim)
+            show_next_char_time = time.time()*1000 + delay_between_chars_ms
+            print(method, character, char_row_and_col)
 
-        print(method)
-
-        pg.time.wait(3000)
-        screen.fill((205, 205, 205))
-        pg.display.flip()
-        pg.time.wait(1000)
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     running = False
                     break
-                #if event.key == pg.K_BACKSPACE:
-                #    del time_keys[-1]
+                if event.key == pg.K_BACKSPACE:
+                    del time_keys[-1]
                 if character in training_letters and event.key == character_key:
-                    TIME_KEYS.append([character, SHOW_TIME]) # fix show_time
+                    time_keys.append([character, SHOW_TIME]) # fix show_time
 
-        perform_method(method, char_row_and_col, FLASH, screen, font_keyboard)
+        perform_method(method, char_row_and_col, screen, font_keyboard)
 
-    #print(time_keys)
+    print(time_keys)
 
 
 

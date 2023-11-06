@@ -54,8 +54,8 @@ for let in training_letters:
 
 # Gets a random key and (if its a training key) it returns the keycode as well
 def get_random_letter_key_pair():
-    if (random.random() <= .50):
-        rand_index = random.randint(0,len(training_keys))
+    if (random.random() <= .20):
+        rand_index = random.randint(0,len(training_keys) - 1)
     else:
         return nontraining_letters[random.randrange(0, len(nontraining_letters) - 1)], None
     return (training_letters[rand_index], training_keys[rand_index])
@@ -66,7 +66,7 @@ def get_random_color(min_range = 0, max_range = 220):
 
 # Using the font arrays declared earlier, we randomize just about everything with the font.
 def get_random_font(randomize_attributes = False):
-    font_index = random.randint(0, len(fonts))
+    font_index = random.randint(0, len(fonts)-1)
     font = fonts[font_index]
     font_made = pygame.font.SysFont(font, random.randrange(400, 750))
     if (randomize_attributes):
@@ -134,12 +134,14 @@ def start_window():
 
             # Some portion of the time, we want to pause for an extended period of time.
             if (random.randint(0,10) == 0):
-                show_time = end_time + random.randrange(5500, 6500)
-
+                show_time = end_time + random.randrange(7500, 8500)
                 # And we can mark it in the data
                 time_keys.append(["~", end_time + 1000])
             else:
-                show_time = end_time + random.randrange(500, 2500)
+                show_time = end_time + random.randrange(1500, 3500)
+            
+            if (character not in training_letters):
+                time_keys.append([character, show_time])
 
         # Events manager
         for event in pygame.event.get():
@@ -151,7 +153,7 @@ def start_window():
                 if event.key == pygame.K_BACKSPACE:
                     del time_keys[-1]
                 if character in training_letters and event.key == character_key:
-                    time_keys.append([character, show_time])
+                    pass
                    
         screen.fill((205, 205, 205))
 

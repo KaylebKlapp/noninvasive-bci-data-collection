@@ -19,16 +19,15 @@ KEYBOARD_FONT = "Alata"
 ENLARGE_KEY_SIZE = 2
 ENLARGE_LETTER_SIZE = 1.5
 FLASH = True
-TIME_UNTIL_NEXT_STIM_CONST_RANGE_START = 1500
-TIME_UNTIL_NEXT_STIM_CONST_RANGE_END = 3000
-TIME_BETWEEN_CHARS_CONST_RANGE_START = 2000
-TIME_BETWEEN_CHARS_CONST_RANGE_END = 5000
+TIME_UNTIL_NEXT_STIM_CONST_RANGE = [1500,3000]
+TIME_BETWEEN_CHARS_CONST_RANGE = [2000,5000]
 TRAINING_KEY_PERCENTAGE = 0.50
 RANDOM_METHOD = True
-RANDOM_KEYBOARD = True
-NEW_KEYBOARD_FREQUENCY_START = 3
-NEW_KEYBOARD_FREQUENCE_END = 5
+RANDOM_KEYBOARD_KEYS = True
+RANDOM_KEYBOARD_SIZE = True
+NEW_KEYBOARD_FREQUENCY_RANGE = [3,5]
 METHOD = 1
+KEYBOARD_ROW_RANGE = [3,5]
 
 training_keys = [pg.key.key_code(letter) for letter in LETTERS]
 
@@ -45,14 +44,45 @@ keyboard = [
             [['Z',0,tuple],['X',0,tuple],['C',0,tuple],['V',0,tuple],['B',0,tuple],['N',0,tuple],['M',0,tuple]]
 ]
 
-def randomize_board():
+def randomize_board_keys():
+    global keyboard
     alphabet = [chr(i) for i in range(ord("A"), ord("Z")+1)]
     for row in range(keyboard.__len__()):
         for col in range(keyboard[row].__len__()):
             replacement = random.sample(alphabet,1)
-            #print(replacement)
             keyboard[row][col][0] = replacement[0]
             alphabet.remove(replacement[0])
 
-if( RANDOM_KEYBOARD ):
-    randomize_board()
+def randomize_board_size():
+    global keyboard
+    alphabet_size = 26
+    keyb_length = random.randint(KEYBOARD_ROW_RANGE[0],KEYBOARD_ROW_RANGE[1])
+    keyboard.clear()
+    keyboard = [[] for i in range(keyb_length)]
+    start = int(alphabet_size/keyb_length) - 2
+    end = int(alphabet_size/keyb_length) + 2
+    col_range = [start, end]
+    for row in range(keyboard.__len__()):
+        num_cols = random.randint(col_range[0],col_range[1])
+        if( num_cols > alphabet_size ):
+            num_cols = alphabet_size
+        
+        keyboard[row] = [['A',0,tuple] for i in range(num_cols)]
+        if( row >= (keyboard.__len__()-1) and num_cols != alphabet_size ):
+            min_row = 100
+            index = 0
+            for i in range(keyboard.__len__()):
+                if( keyboard[i].__len__() < min_row ):
+                    min_row = keyboard[i].__len__()
+                    index = i
+
+            for i in range(alphabet_size-num_cols):
+                keyboard[index].append(['A',0,tuple]) 
+        alphabet_size -= num_cols
+
+
+if( RANDOM_KEYBOARD_SIZE ):
+    randomize_board_size()
+        
+if( RANDOM_KEYBOARD_KEYS ):
+    randomize_board_keys()

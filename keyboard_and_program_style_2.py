@@ -52,7 +52,6 @@ def randomize_board():
     for row in range(keyboard.__len__()):
         for col in range(keyboard[row].__len__()):
             replacement = random.sample(alphabet,1)
-            #print(replacement)
             keyboard[row][col][0] = replacement[0]
             alphabet.remove(replacement[0])
 

@@ -18,6 +18,7 @@ def get_random_letter_key_pair():
     return (LETTERS[rand_index], training_keys[rand_index])
 
 def determine_keysize_and_offset():
+    global keyboard
     # Find the width and height of the screen the program is run on
     width, height = pg.display.get_surface().get_size()
 
@@ -33,7 +34,7 @@ def determine_keysize_and_offset():
     # Determine the size of the keys (want them to be squared) by determining
     # whether the height or width of the screen is the limiting factor
     key_size = width/(max_columns+2)
-    if( (key_size * num_rows) > height ):
+    if( (key_size * (num_rows+2)) > height ):
         key_size = height/(max_columns+2)
         
     # Center the keyboard by finding the distance leftover on the top and bottom
@@ -63,6 +64,7 @@ def initialize_screen():
     return screen
 
 def draw_keyboard(screen, font_keyboard):
+    global keyboard
     # Change the font size to match that of the keys it will sit on
     screen.fill(SCREEN_BACKGROUND)
     for row in range(keyboard.__len__()):
@@ -82,6 +84,7 @@ def draw_key(screen, key, x_offset, y_offset, size, draw, font_keyboard):
         screen.blit(font_keyboard.render(key[0], True, FONT_COLOR), (x_offset,y_offset))
 
 def perform_method(method, char_row_and_col, screen, font_keyboard):
+    global keyboard
     charRow = char_row_and_col[0]
     charCol = char_row_and_col[1]
     x_offsetChar = keyboard[charRow][charCol][2][0]
@@ -143,6 +146,7 @@ def perform_method(method, char_row_and_col, screen, font_keyboard):
 
 
 def init_keyboard(char, screen):
+    global keyboard
     screen.fill(SCREEN_BACKGROUND)
     char_row_and_col = (0,0)
 
@@ -203,17 +207,17 @@ def start_window():
     pg.display.set_caption("BCI training")
     screen = initialize_screen()
 
-    time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_RANGE_START,TIME_UNTIL_NEXT_STIM_CONST_RANGE_END)
-    delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_RANGE_START,TIME_BETWEEN_CHARS_CONST_RANGE_END)
+    time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_RANGE[0],TIME_UNTIL_NEXT_STIM_CONST_RANGE[1])
+    delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_RANGE[0],TIME_BETWEEN_CHARS_CONST_RANGE[1])
     character, character_key = get_random_letter_key_pair()
     if(RANDOM_METHOD or METHOD not in range(1,4)):
         method = random.randint(1,3)
     else:
         method = METHOD
-    new_keyboard = random.randint(NEW_KEYBOARD_FREQUENCY_START, NEW_KEYBOARD_FREQUENCE_END)
+    new_keyboard = random.randint(NEW_KEYBOARD_FREQUENCY_RANGE[0], NEW_KEYBOARD_FREQUENCY_RANGE[1])
     iteration = 0
-    if( RANDOM_KEYBOARD ):
-        randomize_board()
+    if( RANDOM_KEYBOARD_KEYS ):
+        randomize_board_keys()
     char_row_and_col, font_keyboard = init_keyboard(character,screen)
     pg.time.wait(time_until_next_stim)
     show_next_char_time = time.time()*1000 + delay_between_chars_ms
@@ -224,17 +228,17 @@ def start_window():
     while running:
         if (time.time()*1000 > show_next_char_time):
             iteration += 1
-            time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_RANGE_START,TIME_UNTIL_NEXT_STIM_CONST_RANGE_END)
-            delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_RANGE_START,TIME_BETWEEN_CHARS_CONST_RANGE_END)
+            time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_RANGE[0],TIME_UNTIL_NEXT_STIM_CONST_RANGE[1])
+            delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_RANGE[0],TIME_BETWEEN_CHARS_CONST_RANGE[1])
             character, character_key = get_random_letter_key_pair()
             if(RANDOM_METHOD or METHOD not in range(1,4)):
                 method = random.randint(1,3)
             else:
                 method = METHOD
-            if( iteration >= new_keyboard and RANDOM_KEYBOARD):
+            if( iteration >= new_keyboard and RANDOM_KEYBOARD_KEYS):
                 iteration = 0
-                new_keyboard = random.randint(NEW_KEYBOARD_FREQUENCY_START, NEW_KEYBOARD_FREQUENCE_END)
-                randomize_board()
+                new_keyboard = random.randint(NEW_KEYBOARD_FREQUENCY_RANGE[0], NEW_KEYBOARD_FREQUENCY_RANGE[1])
+                randomize_board_keys()
             char_row_and_col, font_keyboard = init_keyboard(character,screen)
             pg.time.wait(time_until_next_stim)
             show_next_char_time = time.time()*1000 + delay_between_chars_ms
@@ -248,7 +252,7 @@ def start_window():
                     break
                 if event.key == pg.K_BACKSPACE:
                     del time_keys[-1]
-                if character in LETTERS and event.key == character_key:
+                if event.key == character_key: # and character in LETTERS:
                     time_keys.append([character, show_time])
 
         perform_method(method, char_row_and_col, screen, font_keyboard)

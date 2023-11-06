@@ -32,9 +32,9 @@ def determine_keysize_and_offset():
 
     # Determine the size of the keys (want them to be squared) by determining
     # whether the height or width of the screen is the limiting factor
-    key_size = width/max_columns
+    key_size = width/(max_columns+2)
     if( (key_size * num_rows) > height ):
-        key_size = height/max_columns
+        key_size = height/(max_columns+2)
         
     # Center the keyboard by finding the distance leftover on the top and bottom
     # of the screen
@@ -148,6 +148,7 @@ def init_keyboard(char, screen):
 
     # Determine the key size and offset to center the keyboard
     x_offset, y_offset, max_columns, key_size = determine_keysize_and_offset()
+    temp_x_offset = x_offset
     
     # Add a buffer between keys to look more natural
     keySize = key_size*KEY_BUFFER
@@ -184,7 +185,7 @@ def init_keyboard(char, screen):
             x_offset += key_size
 
         # Reset the x_offset so it prints at the beginning of the screen again
-        x_offset = 0
+        x_offset = temp_x_offset
 
         # Add the key_size to the y_offset to print the next row
         y_offset += key_size
@@ -241,7 +242,6 @@ def start_window():
                     time_keys.append([character, show_time])
 
         perform_method(method, char_row_and_col, screen, font_keyboard)
-        input()
 
     print(time_keys)
 

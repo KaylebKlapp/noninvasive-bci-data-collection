@@ -25,6 +25,9 @@ TIME_BETWEEN_CHARS_CONST_RANGE_START = 2000
 TIME_BETWEEN_CHARS_CONST_RANGE_END = 5000
 TRAINING_KEY_PERCENTAGE = 0.50
 RANDOM_METHOD = True
+RANDOM_KEYBOARD = False
+NEW_KEYBOARD_FREQUENCY_START = 3
+NEW_KEYBOARD_FREQUENCE_END = 5
 METHOD = 1
 
 training_keys = [pg.key.key_code(letter) for letter in LETTERS]
@@ -43,3 +46,15 @@ keyboard = [
             [['H',0,tuple],['J',0,tuple],['K',0,tuple],['L',0,tuple],['Z',0,tuple]],
             [['X',0,tuple],['C',0,tuple],['V',0,tuple],['B',0,tuple],['N',0,tuple]]
 ]
+
+def randomize_board():
+    alphabet = [chr(i) for i in range(ord("A"), ord("Z")+1)]
+    for row in range(keyboard.__len__()):
+        for col in range(keyboard[row].__len__()):
+            replacement = random.sample(alphabet,1)
+            #print(replacement)
+            keyboard[row][col][0] = replacement[0]
+            alphabet.remove(replacement[0])
+
+if( RANDOM_KEYBOARD ):
+    randomize_board()

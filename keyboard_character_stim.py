@@ -210,14 +210,20 @@ def start_window():
         method = random.randint(1,3)
     else:
         method = METHOD
+    new_keyboard = random.randint(NEW_KEYBOARD_FREQUENCY_START, NEW_KEYBOARD_FREQUENCE_END)
+    iteration = 0
+    if( RANDOM_KEYBOARD ):
+        randomize_board()
     char_row_and_col, font_keyboard = init_keyboard(character,screen)
     pg.time.wait(time_until_next_stim)
     show_next_char_time = time.time()*1000 + delay_between_chars_ms
+    show_time = time.time()
     print(method, character, char_row_and_col)
 
     running = True
     while running:
         if (time.time()*1000 > show_next_char_time):
+            iteration += 1
             time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_RANGE_START,TIME_UNTIL_NEXT_STIM_CONST_RANGE_END)
             delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_RANGE_START,TIME_BETWEEN_CHARS_CONST_RANGE_END)
             character, character_key = get_random_letter_key_pair()
@@ -225,6 +231,10 @@ def start_window():
                 method = random.randint(1,3)
             else:
                 method = METHOD
+            if( iteration >= new_keyboard and RANDOM_KEYBOARD):
+                iteration = 0
+                new_keyboard = random.randint(NEW_KEYBOARD_FREQUENCY_START, NEW_KEYBOARD_FREQUENCE_END)
+                randomize_board()
             char_row_and_col, font_keyboard = init_keyboard(character,screen)
             pg.time.wait(time_until_next_stim)
             show_next_char_time = time.time()*1000 + delay_between_chars_ms

@@ -47,13 +47,13 @@ File handling variables
 """
 
 # preferably your name
-__file_prefix__ = "kayleb"
+__subject_name__ = "kayleb"
 
 # Type of collections
 __collection_name__ = "test"
 
 # Date time string
-__file_suffix__ = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
+_date_time_ = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
 
 def start_data_stream():
     data = []
@@ -62,7 +62,7 @@ def start_data_stream():
         time.sleep(0.1)
         board.get_board_data()
 
-        for i in range(50):
+        while True:
             time.sleep(0.1)
             inter_data = board.get_board_data()
             for i in range(len(inter_data[0])):
@@ -71,13 +71,18 @@ def start_data_stream():
                 new_row.extend(single_frame)
                 data.append(new_row)
 
-        board.stop_stream()
     except:
+        board.stop_stream()
         print("An error occurred in the stream.")
     finally:
         return data
+    
+end_time = 0
+start_time = time.time() * 1000
+
 
 data = np.array(start_data_stream())
+end_time = time.time() * 1000
 print(data.shape)
 
 output = ""
@@ -88,5 +93,5 @@ for d in data:
     output += "\n"
 output = output.rstrip("\n")
 
-with open(f"{__file_prefix__}_{__collection_name__}_{__file_suffix__}.txt", "x") as fp:
+with open(f"{_date_time_}_{__collection_name__}_{start_time}_{end_time}.txt", "x") as fp:
     fp.write(output)

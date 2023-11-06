@@ -109,12 +109,12 @@ def perform_method(method, char_row_and_col, screen, font_keyboard):
         if(FLASH):
             if (int(time.time() * 4) % 2 == 0):
                 # Draw the keys
-                pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
+                pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
                     
             else:
                 # Draw the keys
-                pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
+                pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
         else:
             pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
@@ -125,12 +125,12 @@ def perform_method(method, char_row_and_col, screen, font_keyboard):
         if(FLASH):
             if (int(time.time() * 4) % 2 == 0):
                 # Draw the keys
-                pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
+                pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
                     
             else:
                 # Draw the keys
-                pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
+                pg.draw.rect(screen,KEY_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
                 screen.blit(font_keyboard.render(char, True, FONT_COLOR), (x_offsetChar,y_offsetChar))
         else:
             pg.draw.rect(screen,FLASH_COLOR,pg.Rect(x_offsetChar, y_offsetChar, size, size))
@@ -202,8 +202,8 @@ def start_window():
     pg.display.set_caption("BCI training")
     screen = initialize_screen()
 
-    time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_START,TIME_UNTIL_NEXT_STIM_CONST_END)
-    delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_START,TIME_BETWEEN_CHARS_CONST_END)
+    time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_RANGE_START,TIME_UNTIL_NEXT_STIM_CONST_RANGE_END)
+    delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_RANGE_START,TIME_BETWEEN_CHARS_CONST_RANGE_END)
     character, character_key = get_random_letter_key_pair()
     if(RANDOM_METHOD or METHOD not in range(1,4)):
         method = random.randint(1,3)
@@ -217,8 +217,8 @@ def start_window():
     running = True
     while running:
         if (time.time()*1000 > show_next_char_time):
-            time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_START,TIME_UNTIL_NEXT_STIM_CONST_END)
-            delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_START,TIME_BETWEEN_CHARS_CONST_END)
+            time_until_next_stim = random.randint(TIME_UNTIL_NEXT_STIM_CONST_RANGE_START,TIME_UNTIL_NEXT_STIM_CONST_RANGE_END)
+            delay_between_chars_ms = random.randint(TIME_BETWEEN_CHARS_CONST_RANGE_START,TIME_BETWEEN_CHARS_CONST_RANGE_END)
             character, character_key = get_random_letter_key_pair()
             if(RANDOM_METHOD or METHOD not in range(1,4)):
                 method = random.randint(1,3)
@@ -241,6 +241,7 @@ def start_window():
                     time_keys.append([character, show_time])
 
         perform_method(method, char_row_and_col, screen, font_keyboard)
+        input()
 
     print(time_keys)
 

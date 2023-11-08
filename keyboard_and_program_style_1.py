@@ -8,8 +8,8 @@ subject_name = "jayden"
 more_info = ""
 
 time_keys = []
-LETTERS = ['K', 'W', 'E']
-KEYS = [pg.K_k, pg.K_w, pg.K_e]
+LETTERS = ['K']
+KEYS = [pg.K_k]
 FONT_COLOR = tuple((255,255,255))
 KEY_COLOR = tuple((0,0,0))
 FLASH_COLOR = tuple((255,0,0))
@@ -21,15 +21,13 @@ ENLARGE_LETTER_SIZE = 1.5
 FLASH = True
 TIME_UNTIL_NEXT_STIM_CONST_RANGE = [1500,3000]
 TIME_BETWEEN_CHARS_CONST_RANGE = [2000,5000]
-TRAINING_KEY_PERCENTAGE = 0.50
+TRAINING_KEY_PERCENTAGE = 0.40
 RANDOM_METHOD = True
 RANDOM_KEYBOARD_KEYS = False
 RANDOM_KEYBOARD_SIZE = False
 NEW_KEYBOARD_FREQUENCY_RANGE = [3,5]
 METHOD = 1
 KEYBOARD_ROW_RANGE = [3,5]
-
-training_keys = [pg.key.key_code(letter) for letter in LETTERS]
 
 alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
 nontraining_letters = alphabet

@@ -5,17 +5,17 @@ import random
 import time
 
 # Change based on the type of keyboard you want
-from keyboard_and_program_style_2 import *
+from keyboard_and_program_style_1 import *
 
 pg.init()
 pg.font.init()
 
 def get_random_letter_key_pair():
     if (random.random() <= TRAINING_KEY_PERCENTAGE):
-        rand_index = random.randint(0,2)
+        rand_index = random.randint(0,len(KEYS)-1)
     else:
         return nontraining_letters[random.randrange(0, len(nontraining_letters))], None
-    return (LETTERS[rand_index], training_keys[rand_index])
+    return (LETTERS[rand_index], KEYS[rand_index])
 
 def determine_keysize_and_offset():
     global keyboard
@@ -243,6 +243,8 @@ def start_window():
             pg.time.wait(time_until_next_stim)
             show_next_char_time = time.time()*1000 + delay_between_chars_ms
             show_time = time.time()
+            if not character in LETTERS:
+                time_keys.append([character, show_time])
             print(method, character, char_row_and_col)
 
         for event in pg.event.get():
@@ -252,7 +254,7 @@ def start_window():
                     break
                 if event.key == pg.K_BACKSPACE:
                     del time_keys[-1]
-                if event.key == character_key: # and character in LETTERS:
+                elif event.key == character_key: # and character in LETTERS:
                     time_keys.append([character, show_time])
 
         perform_method(method, char_row_and_col, screen, font_keyboard)

@@ -23,8 +23,8 @@ TIME_UNTIL_NEXT_STIM_CONST_RANGE = [1500,3000]
 TIME_BETWEEN_CHARS_CONST_RANGE = [2000,5000]
 TRAINING_KEY_PERCENTAGE = 0.50
 RANDOM_METHOD = True
-RANDOM_KEYBOARD_KEYS = False
-RANDOM_KEYBOARD_SIZE = False
+RANDOM_KEYBOARD_KEYS = True
+RANDOM_KEYBOARD_SIZE = True
 NEW_KEYBOARD_FREQUENCY_RANGE = [3,5]
 METHOD = 1
 KEYBOARD_ROW_RANGE = [3,5]
@@ -70,17 +70,19 @@ def randomize_board_size():
             num_cols = alphabet_size
         
         keyboard[row] = [['A',0,tuple] for i in range(num_cols)]
-        if( row >= (keyboard.__len__()-1) and num_cols != alphabet_size ):
-            min_row = 100
-            index = 0
-            for i in range(keyboard.__len__()):
-                if( keyboard[i].__len__() < min_row ):
-                    min_row = keyboard[i].__len__()
-                    index = i
-
-            for i in range(alphabet_size-num_cols):
-                keyboard[index].append(['A',0,tuple]) 
         alphabet_size -= num_cols
+
+        if( row >= (keyboard.__len__()-1) and alphabet_size != 0 ):
+            while(alphabet_size != 0):
+                min_row = 100
+                index = 0
+                for i in range(keyboard.__len__()):
+                    if( keyboard[i].__len__() < min_row ):
+                        min_row = keyboard[i].__len__()
+                        index = i
+
+                keyboard[index].append(['A',0,tuple]) 
+                alphabet_size -= 1
 
 
 if( RANDOM_KEYBOARD_SIZE ):

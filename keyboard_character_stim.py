@@ -5,7 +5,7 @@ import random
 import time
 
 # Change based on the type of keyboard you want
-from keyboard_and_program_style_1 import *
+from keyboard_and_program_style_2 import *
 
 pg.init()
 pg.font.init()
@@ -270,8 +270,8 @@ try:
 except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
-#finally:
- #   file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
-  #  with open(file_name, "w") as fp:
-   #     for input in time_keys:
-    #        fp.write(f"{input[0]},{input[1]}\n")
+finally:
+    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
+    with open(file_name, "w") as fp:
+        for input in time_keys:
+            fp.write(f"{input[0]},{input[1]}\n")

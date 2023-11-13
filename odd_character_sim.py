@@ -52,16 +52,6 @@ training_keys = [pygame.key.key_code(letter) for letter in training_letters]
 
 for let in training_letters:
     nontraining_letters.remove(let)
-    
-"""
-# Gets a random key and (if its a training key) it returns the keycode as well
-def get_random_letter_key_pair():
-    if (random.random() <= .50):
-        rand_index = random.randint(0,len(training_keys))
-    else:
-        return nontraining_letters[random.randrange(0, len(nontraining_letters) - 1)], None
-    return (training_letters[rand_index], training_keys[rand_index])
-"""
 
 words_file_with_keys = open("words_with_keys.txt", "r")
 words_file_with_keys_contents = words_file_with_keys.read()
@@ -73,8 +63,12 @@ words_file_without_keys_contents = words_file_without_keys.read()
 words_without_keys = words_file_without_keys_contents.split("\n")
 words_file_without_keys.close()
 
-def get_random_word(words):
-    return random.choice(words)
+def get_random_word_letter_inx(words):
+    letter = random.choice(training_letters)
+    while True:
+        word = random.choice(words)
+        if letter in word:
+            return (word, letter, word.find(letter))
 
 def get_random_letter_inx(word):
     return random.randint(0,len(word)-1)
@@ -154,12 +148,8 @@ def render_word(word, font, odd_font, odd_char_color, odd_char_index):
 def start_window():
 
     word_bank = get_random_wordbank()
-    word = get_random_word(word_bank)
+    word, odd_char, odd_char_index = get_random_word_letter_inx(word_bank)           #Get random word from wordbank
     odd_char_color = (255, 0, 0)        #Color of odd letter. Default is red
-    odd_char_index = get_odd_char_index(word, word_bank)
-
-
-    odd_char = word[odd_char_index]
 
     sys_font = get_random_font()
     font = pygame.font.SysFont(sys_font, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))    #Font
@@ -180,11 +170,9 @@ def start_window():
                     time_keys.append([odd_char, start_time])
 
                 word_bank = get_random_wordbank()           #Get a wordbank, one with key letters or one without
-                odd_char_color = get_random_color()         #Odd character color
-                word = get_random_word(word_bank)           #Get random word from wordbank
-                odd_char_index = get_odd_char_index(word, word_bank)    #get odd char index
-                odd_char = word[odd_char_index]             #Get odd char for time_keys (data collection)
+                word, odd_char, odd_char_index = get_random_word_letter_inx(word_bank)           #Get random word from wordbank
 
+                odd_char_color = get_random_color()         #Odd character color
                 sys_font = get_random_font()
                 font = pygame.font.SysFont(sys_font, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))
                 odd_font = randomize_font(font)

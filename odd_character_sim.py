@@ -167,7 +167,10 @@ def start_window():
                 running = False;
                 break
             elif event.type == pygame.KEYDOWN:
-                if odd_char in training_letters and int(event.key) == int(get_letter_key_code(odd_char)):
+                if event.key == pygame.K_ESCAPE:
+                    running = False;
+                    break
+                elif odd_char in training_letters and int(event.key) == int(get_letter_key_code(odd_char)):
                     time_keys.append([odd_char, time.time() * 1000])
                 elif odd_char not in training_letters:
                     time_keys.append([odd_char, time.time() * 1000])
@@ -200,7 +203,7 @@ except Exception as e:
     print("An error occurred. Please double check the file.")
     time_end_training = int(time.time() * 1000)
 finally:
-    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
+    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.stm"
     with open(file_name, "w") as fp:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")

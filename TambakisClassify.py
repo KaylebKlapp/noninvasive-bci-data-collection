@@ -15,6 +15,7 @@ BLACK = (0,0,0)
 
 time_keys = []
 letters = ['K', 'W', 'E']
+alphabet22 = [chr(i) for i in range(ord("A"), ord("Z"))]
 keys = [pg.K_k, pg.K_w, pg.K_e]
 font_color = (255,255,255)
 key_color = (0,0,0)
@@ -50,9 +51,13 @@ class create_keyboard(object):
             self.keyboard[index] = key_row
             for letter in key_row:
                 alphabet.remove(letter)
-
-        REDLETTER1 = random.choice(letters)
-        self.randomcharchoice1 = REDLETTER1
+        chance1 = random.randint(1,10)
+        if(chance1<=7):
+            REDLETTER1 = random.choice(letters)
+            self.randomcharchoice1 = REDLETTER1
+        else:
+            REDLETTER1 = random.choice(alphabet22)
+            self.randomcharchoice1 = REDLETTER1
 
 
     def draw_board(self, color_for_diff_letter = RED, color_for_diff_box = (255, 255, 255)):

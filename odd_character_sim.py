@@ -10,8 +10,8 @@ import random
 Strings for file formatting, these should be standard between all programs
 """
 date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
-collection_type = "flashing_stim"
-subject_name = "Sam"
+collection_type = "dictionary"
+subject_name = "sam"
 more_info = ""
 
 # Initialize Pygame Things
@@ -19,7 +19,7 @@ pygame.init()
 pygame.font.init()
 pygame.display.set_caption("BCI training")
 
-KEY_WORD_PROB = 1             #How often a word with a key letter is used
+KEY_WORD_PROB = 0.5             #How often a word with a key letter is used
 NORMAL_CHAR_COLOR = (0, 0, 0)   #Color of all non-odd letters, Defaut it black. Do not change.
 MIN_FONT_SIZE = 50
 MAX_FONT_SIZE = 150
@@ -63,12 +63,17 @@ words_file_without_keys_contents = words_file_without_keys.read()
 words_without_keys = words_file_without_keys_contents.split("\n")
 words_file_without_keys.close()
 
-def get_random_word_letter_inx(words):
-    letter = random.choice(training_letters)
-    while True:
-        word = random.choice(words)
-        if letter in word:
-            return (word, letter, word.find(letter))
+def get_random_word_letter_inx(word_bank):
+    if any(letter in word_bank for letter in training_letters):  #If words with keys, choose random key and find word with that key
+        letter = random.choice(training_letters)
+        while True:
+            word = random.choice(word_bank)
+            if letter in word:
+                return (word, letter, word.find(letter))
+    else:                                               #otherwise get a random word, then random char in that word
+        word = random.choice(word_bank)
+        letter_inx = random.randint(0, len(word) - 1)
+        return (word, word[letter_inx], letter_inx)
 
 def get_random_letter_inx(word):
     return random.randint(0,len(word)-1)
@@ -154,9 +159,7 @@ def start_window():
     sys_font = get_random_font()
     font = pygame.font.SysFont(sys_font, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))    #Font
     odd_font = randomize_font(font) #Font
-    start_time = time.time()*1000
     
-    #letter_index = 0
     running = True;
     while running:
         for event in pygame.event.get():
@@ -164,10 +167,13 @@ def start_window():
                 running = False;
                 break
             elif event.type == pygame.KEYDOWN:
-                if odd_char in training_letters and int(event.key) == int(get_letter_key_code(odd_char)):
-                    time_keys.append([odd_char, start_time])
+                if event.key == pygame.K_ESCAPE:
+                    running = False;
+                    break
+                elif odd_char in training_letters and int(event.key) == int(get_letter_key_code(odd_char)):
+                    time_keys.append([odd_char, time.time() * 1000])
                 elif odd_char not in training_letters:
-                    time_keys.append([odd_char, start_time])
+                    time_keys.append([odd_char, time.time() * 1000])
 
                 word_bank = get_random_wordbank()           #Get a wordbank, one with key letters or one without
                 word, odd_char, odd_char_index = get_random_word_letter_inx(word_bank)           #Get random word from wordbank
@@ -184,15 +190,20 @@ def start_window():
         SCREEN.fill((205, 205, 205))
         render_word(word, font, odd_font, odd_char_color, odd_char_index)
         pygame.display.flip()
-        start_time = time.time() * 1000
                     
+time_end_training = 0
+time_start_training = int(time.time() * 1000)
+start_window()
+time_end_training = int(time.time() * 1000)
 
 try:
-    start_window()
-    print(time_keys)
-except:
+    pass
+except Exception as e:
+    print(e.__str__())
     print("An error occurred. Please double check the file.")
+    time_end_training = int(time.time() * 1000)
 finally:
-    with open("test.csv", "w") as fp:
+    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.stm"
+    with open(file_name, "w") as fp:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")

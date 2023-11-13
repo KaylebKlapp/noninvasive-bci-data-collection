@@ -8,8 +8,8 @@ subject_name = "jayden"
 more_info = ""
 
 time_keys = []
-LETTERS = ['K']
-KEYS = [pg.K_k]
+LETTERS = ['K', 'W', 'E']
+KEYS = [pg.K_k, pg.K_w, pg.K_e]
 FONT_COLOR = tuple((255,255,255))
 KEY_COLOR = tuple((0,0,0))
 FLASH_COLOR = tuple((255,0,0))
@@ -19,11 +19,11 @@ KEYBOARD_FONT = "Alata"
 ENLARGE_KEY_SIZE = 2
 ENLARGE_LETTER_SIZE = 1.5
 FLASH = True
-TIME_UNTIL_NEXT_STIM_CONST_RANGE = [1500,3000]
+TIME_UNTIL_NEXT_STIM_CONST_RANGE = [1500,4000]
 TIME_BETWEEN_CHARS_CONST_RANGE = [2000,5000]
-TRAINING_KEY_PERCENTAGE = 0.40
+TRAINING_KEY_PERCENTAGE = 0.50
 RANDOM_METHOD = True
-RANDOM_KEYBOARD_KEYS = False
+RANDOM_KEYBOARD_KEYS = True
 RANDOM_KEYBOARD_SIZE = False
 NEW_KEYBOARD_FREQUENCY_RANGE = [3,5]
 METHOD = 1
@@ -37,9 +37,11 @@ for let in LETTERS:
 
 # [character, size, coordinate]
 keyboard = [
-            [['Q',0,tuple],['W',0,tuple],['E',0,tuple],['R',0,tuple],['T',0,tuple],['Y',0,tuple],['U',0,tuple],['I',0,tuple],['O',0,tuple],['P',0,tuple]],
-            [['A',0,tuple],['S',0,tuple],['D',0,tuple],['F',0,tuple],['G',0,tuple],['H',0,tuple],['J',0,tuple],['K',0,tuple],['L',0,tuple]],
-            [['Z',0,tuple],['X',0,tuple],['C',0,tuple],['V',0,tuple],['B',0,tuple],['N',0,tuple],['M',0,tuple]]
+            [['Q',0,tuple],['W',0,tuple],['E',0,tuple],['R',0,tuple],['T',0,tuple]],
+            [['Y',0,tuple],['U',0,tuple],['I',0,tuple],['O',0,tuple],['P',0,tuple]],
+            [['A',0,tuple],['S',0,tuple],['D',0,tuple],['F',0,tuple],['G',0,tuple]],
+            [['H',0,tuple],['J',0,tuple],['K',0,tuple],['L',0,tuple],['Z',0,tuple]],
+            [['X',0,tuple],['C',0,tuple],['V',0,tuple],['B',0,tuple],['N',0,tuple]]
 ]
 
 def randomize_board_keys():

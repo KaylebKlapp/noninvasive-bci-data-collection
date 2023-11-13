@@ -19,7 +19,7 @@ pygame.init()
 pygame.font.init()
 pygame.display.set_caption("BCI training")
 
-KEY_WORD_PROB = 0.3             #How often a word with a key letter is used
+KEY_WORD_PROB = 1             #How often a word with a key letter is used
 NORMAL_CHAR_COLOR = (0, 0, 0)   #Color of all non-odd letters, Defaut it black. Do not change.
 MIN_FONT_SIZE = 50
 MAX_FONT_SIZE = 150
@@ -34,7 +34,6 @@ unreadable_font_indexes =[3, 22, 37, 40, 49, 51, 52, 58, 69, 70, 71, 72, 73, 74,
 #Removing the fonts in reverse order, so that I dont mess up the indexes
 unreadable_font_indexes.reverse()
 for inx in unreadable_font_indexes:
-    #print(inx)
     del fonts[inx]
 
 
@@ -54,6 +53,7 @@ training_keys = [pygame.key.key_code(letter) for letter in training_letters]
 for let in training_letters:
     nontraining_letters.remove(let)
     
+"""
 # Gets a random key and (if its a training key) it returns the keycode as well
 def get_random_letter_key_pair():
     if (random.random() <= .50):
@@ -61,6 +61,7 @@ def get_random_letter_key_pair():
     else:
         return nontraining_letters[random.randrange(0, len(nontraining_letters) - 1)], None
     return (training_letters[rand_index], training_keys[rand_index])
+"""
 
 words_file_with_keys = open("words_with_keys.txt", "r")
 words_file_with_keys_contents = words_file_with_keys.read()
@@ -77,6 +78,17 @@ def get_random_word(words):
 
 def get_random_letter_inx(word):
     return random.randint(0,len(word)-1)
+
+def get_key_index(word):
+    while(True):
+        inx = random.randint(0, len(word)-1)
+        if word[inx] in training_letters:
+            return inx
+        
+def get_odd_char_index(word, word_bank):
+    if set(word_bank).union(set(training_letters)):  #Get odd char index. If key word, make sure its a key, otherwise randomize
+        return get_key_index(word)
+    return get_random_letter_inx(word)
 
 def get_random_wordbank():
     if random.random() < KEY_WORD_PROB:
@@ -144,7 +156,9 @@ def start_window():
     word_bank = get_random_wordbank()
     word = get_random_word(word_bank)
     odd_char_color = (255, 0, 0)        #Color of odd letter. Default is red
-    odd_char_index =  get_random_letter_inx(word)   #Index of odd char
+    odd_char_index = get_odd_char_index(word, word_bank)
+
+
     odd_char = word[odd_char_index]
 
     sys_font = get_random_font()
@@ -160,44 +174,37 @@ def start_window():
                 running = False;
                 break
             elif event.type == pygame.KEYDOWN:
-                if odd_char in training_letters and event.key == get_letter_key_code(odd_char):
+                if odd_char in training_letters and int(event.key) == int(get_letter_key_code(odd_char)):
+                    time_keys.append([odd_char, start_time])
+                elif odd_char not in training_letters:
                     time_keys.append([odd_char, start_time])
 
-                word_bank = get_random_wordbank()
-                odd_char_color = get_random_color()
-                word = get_random_word(word_bank)
-                odd_char_index = get_random_letter_inx(word)
-                odd_char = word[odd_char_index]
+                word_bank = get_random_wordbank()           #Get a wordbank, one with key letters or one without
+                odd_char_color = get_random_color()         #Odd character color
+                word = get_random_word(word_bank)           #Get random word from wordbank
+                odd_char_index = get_odd_char_index(word, word_bank)    #get odd char index
+                odd_char = word[odd_char_index]             #Get odd char for time_keys (data collection)
 
                 sys_font = get_random_font()
                 font = pygame.font.SysFont(sys_font, random.randint(MIN_FONT_SIZE, MAX_FONT_SIZE))
                 odd_font = randomize_font(font)
 
-                """
-                if event.key == pygame.K_RETURN:
-                    time_keys.append([training_letters[letter_index], int(time.time() * 1000)])
-                    letter_index += 1
-                    letter_index %= len(training_letters)
-                
-                if event.key == keys[letter_index]:
-                    time_keys.append([training_letters[letter_index], int(time.time() * 1000)])
-                    letter_index += 1
-                    letter_index %= len(training_letters)
-                """
+                SCREEN.fill((205, 205, 205))
+                pygame.display.flip()
+                pygame.time.wait(random.randint(0,3000))
+
         SCREEN.fill((205, 205, 205))
         render_word(word, font, odd_font, odd_char_color, odd_char_index)
         pygame.display.flip()
         start_time = time.time() * 1000
                     
 
-start_window()
-"""
 try:
     start_window()
+    print(time_keys)
 except:
     print("An error occurred. Please double check the file.")
 finally:
     with open("test.csv", "w") as fp:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")
-"""

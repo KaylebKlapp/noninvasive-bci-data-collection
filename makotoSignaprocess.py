@@ -50,7 +50,7 @@ def preprocess_Makoto(arr, high_pass_cutoff=1.0, sampling_rate=100.0):
 
 
 
-    Norm_array = (avg_final-np.min(avg_final)/np.max(avg_final)-np.min(avg_final))
+    Norm_array = (avg_final-np.min(avg_final))/(np.max(avg_final)-np.min(avg_final))
     process_finalarr = np.sqrt(Norm_array)
     
     plt.subplot(2, 1, 2)

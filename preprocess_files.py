@@ -6,6 +6,6 @@ chdir("data")
 files_eeg = glob("*.eeg")
 files_stm = glob("*.stm")
 
-for file in files_stim:
+for file in files_stm:
     print(file)
 

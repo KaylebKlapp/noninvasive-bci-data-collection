@@ -93,5 +93,5 @@ for d in data:
     output += "\n"
 output = output.rstrip("\n")
 
-with open(f"{_date_time_}_{__collection_name__}_{start_time}_{end_time}.txt", "x") as fp:
+with open(f"{_date_time_}_{__collection_name__}_{start_time}_{end_time}.stm", "x") as fp:
     fp.write(output)

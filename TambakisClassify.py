@@ -193,7 +193,7 @@ except Exception as e:
     print("An error occurred. Please double check the file.")
     time_end_training = int(time.time() * 1000)
 finally:
-    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.stm"
+    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.stim"
     with open(file_name, "w") as fp:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")

@@ -8,6 +8,8 @@ import random
 """
 Strings for file formatting, these should be standard between all programs
 """
+with open("collect_key.txt", "r") as fp:
+    collect_key = int(fp.readline())
 date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
 collection_type = "flashing_stim"
 subject_name = "kayleb"
@@ -178,7 +180,7 @@ except Exception as e:
     print("An error occurred. Please double check the file.")
     time_end_training = int(time.time() * 1000)
 finally:
-    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.stm"
+    file_name = f"{collect_key}_{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.stm"
     with open(file_name, "w") as fp:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")

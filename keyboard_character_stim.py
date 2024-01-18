@@ -4,10 +4,11 @@ import pygame as pg
 import random
 import time
 
+pg.init()
+
 # Change based on the type of keyboard you want
 from keyboard_and_program_style_1 import *
 
-pg.init()
 pg.font.init()
 
 def get_random_letter_key_pair():
@@ -266,6 +267,9 @@ def start_window():
 time_end_training = 0
 time_start_training = int(time.time() * 1000)
 
+with open("collect_key.txt", "r") as fp:
+    collect_key = int(fp.readline())
+
 try:
     start_window()
     time_end_training = int(time.time() * 1000)
@@ -273,7 +277,7 @@ except Exception as e:
     print(e.__str__())
     print("An error occurred. Please double check the file.")
 finally:
-    file_name = f"{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
+    file_name = f"{collect_key}_{date_string}_{subject_name}_{collection_type}_{more_info}_{time_end_training}_{time_start_training}.txt"
     with open(file_name, "w") as fp:
         for input in time_keys:
             fp.write(f"{input[0]},{input[1]}\n")

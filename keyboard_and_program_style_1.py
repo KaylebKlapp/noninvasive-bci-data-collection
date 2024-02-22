@@ -28,7 +28,7 @@ RANDOM_KEYBOARD_SIZE = False
 NEW_KEYBOARD_FREQUENCY_RANGE = [3,5]
 
 # Method 1 = flash, 2 = enlarge, 3 = disappear
-METHOD = 1
+METHOD = 3
 KEYBOARD_ROW_RANGE = [3,5]
 
 alphabet = [chr(i) for i in range(ord("A"), ord("Z"))]
@@ -37,7 +37,7 @@ nontraining_letters = alphabet
 for let in LETTERS:
     nontraining_letters.remove(let)
 
-letter = "V"
+letter = "K"
 key = pg.key.key_code(letter)
 LETTERS = [letter]
 KEYS = [key]

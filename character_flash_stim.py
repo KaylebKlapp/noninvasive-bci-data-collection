@@ -12,7 +12,7 @@ with open("collect_key.txt", "r") as fp:
     collect_key = int(fp.readline())
 date_string = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
 collection_type = "flashing_stim"
-subject_name = "kayleb"
+subject_name = input("Ender your name: ")
 more_info = ""
 
 
@@ -56,11 +56,11 @@ for let in training_letters:
 
 # Gets a random key and (if its a training key) it returns the keycode as well
 def get_random_letter_key_pair():
-    if (random.random() <= .20):
+    if (random.random() <= .35):
         rand_index = random.randint(0,len(training_keys) - 1)
     else:
         return nontraining_letters[random.randrange(0, len(nontraining_letters) - 1)], None
-    return (training_letters[rand_index], training_keys[rand_index])
+    return training_letters[rand_index], training_keys[rand_index]
 
 # Get a random color, decreasing the max color makes the letters darker, increasing min makes it lighter
 def get_random_color(min_range = 0, max_range = 220):
@@ -155,7 +155,7 @@ def start_window():
                 if event.key == pygame.K_BACKSPACE:
                     del time_keys[-1]
                 if character in training_letters and event.key == character_key:
-                    pass
+                    time_keys.append([character, show_time])
                    
         screen.fill((205, 205, 205))
 

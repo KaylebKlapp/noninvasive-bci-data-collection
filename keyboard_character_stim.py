@@ -10,6 +10,7 @@ pg.init()
 from keyboard_and_program_style_1 import *
 
 pg.font.init()
+subject_name = input("Input subject name: ")
 
 def get_random_letter_key_pair():
     if (random.random() <= TRAINING_KEY_PERCENTAGE):

@@ -1,7 +1,25 @@
 import numpy as np  
 from datetime import datetime
 import time
+import os
 import brainflow as bf
+
+def write_data(data):
+    data = np.array(data)
+    print(data.shape)
+
+    output = ""
+    for d in data:
+        for c in d:
+            output += str(c) + ","
+        output = output.rstrip(",")
+        output += "\n"
+    output = output.rstrip("\n")
+
+    with open(f"data/{collect_key}_{name}_{_date_time_}_{__collection_name__}_{0}_{0}.stm", "a") as fp:
+        fp.write(output)
+    
+    data = []
 
 # Fancy unnecessary network stuff
 # parser = argparse.ArgumentParser()
@@ -25,7 +43,7 @@ board.prepare_session()
 # Read the preset file, and send it to the board. This file was stolen from the BCI GUI saved file
 # https://docs.openbci.com/Cyton/CytonSDK/#channel-setting-commands
 
-name = "jayden"
+name = input("Name: ")
 file_suffix = "_" + name
 preset_file = f"preset{file_suffix}.txt"
 preset_file_contents = ""
@@ -78,31 +96,21 @@ def start_data_stream():
                 new_row = [int(time.time() * 10000)]
                 new_row.extend(single_frame)
                 data.append(new_row)
-
+            if (len(data)) > 1000:
+                write_data(data)
+                data = []
     except:
         board.stop_stream()
-        print("An error occurred in the stream.")
+        print(f"Writing data to file {len(data)}")
+        write_data(data)
     finally:
-        return data
+        board.stop_stream()
     
 end_time = 0
 start_time = time.time() * 1000
 
-name_test = input(f"Collcting data using preset file {preset_file}. Type your name to continue.\n")
-if (name_test != name):
-    quit()
 
-data = np.array(start_data_stream())
-end_time = time.time() * 1000
-print(data.shape)
-
-output = ""
-for d in data:
-    for c in d:
-        output += str(c) + ","
-    output = output.rstrip(",")
-    output += "\n"
-output = output.rstrip("\n")
-
-with open(f"data/{collect_key}_{name}_{_date_time_}_{__collection_name__}_{start_time}_{end_time}.stm", "x") as fp:
-    fp.write(output)
+with open(f"data/{collect_key}_{name}_{_date_time_}_{__collection_name__}_{0}_{0}.stm", "w"):
+    pass
+          
+start_data_stream()

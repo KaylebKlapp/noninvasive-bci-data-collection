@@ -29,7 +29,11 @@ KEY_LETTER_2 = 'v'
 KEY_LETTER_3 = 'e'
 
 fonts = pygame.font.get_fonts()
-unreadable_font_indexes =[3, 22, 37, 40, 49, 51, 52, 58, 69, 70, 71, 72, 73, 74, 75, 76, 78, 83, 87, 92, 95, 96, 98, 99, 103, 105, 109, 115, 116, 119, 120, 121, 122, 125, 127, 131, 133, 136, 137, 139, 140, 143, 144, 148, 150, 151, 152]
+unreadable_font_indexes =[
+    3, 22, 37, 40, 49, 51, 52, 58, 69, 70, 71, 72, 73, 74, 75, 76, 78, 83, 
+    87, 92, 95, 96, 98, 99, 103, 105, 109, 115, 116, 119, 120, 121, 122, 
+    125, 127, 131, 133, 136, 137, 139, 140, 143, 144, 148, 150, 151, 152
+    ]
 
 #Removing the fonts in reverse order, so that I dont mess up the indexes
 unreadable_font_indexes.reverse()

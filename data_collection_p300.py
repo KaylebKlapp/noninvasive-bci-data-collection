@@ -80,7 +80,7 @@ def start_data_stream():
 end_time = 0
 start_time = time.time() * 1000
 
-
+ 
 data = np.array(start_data_stream())
 end_time = time.time() * 1000
 print(data.shape)

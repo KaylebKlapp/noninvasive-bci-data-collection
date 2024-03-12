@@ -4,6 +4,11 @@ import time
 import os
 import brainflow as bf
 
+
+# Type of collections
+__collection_name__ = input("File prefix: ")
+name = input("Name: ")
+
 def write_data(data):
     data = np.array(data)
     print(data.shape)
@@ -43,7 +48,6 @@ board.prepare_session()
 # Read the preset file, and send it to the board. This file was stolen from the BCI GUI saved file
 # https://docs.openbci.com/Cyton/CytonSDK/#channel-setting-commands
 
-name = input("Name: ")
 file_suffix = "_" + name
 preset_file = f"preset{file_suffix}.txt"
 preset_file_contents = ""
@@ -75,36 +79,37 @@ File handling variables
 # preferably your name
 __subject_name__ = name
 
-# Type of collections
-__collection_name__ = "flashing"
-
 # Date time string
 _date_time_ = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
 
 def start_data_stream():
     data = []
-    try:
-        board.start_stream(45000)
-        time.sleep(0.1)
-        board.get_board_data()
-
-        while True:
+    inputText = ""
+    __collection_name__ = inputText
+    
+    while (inputText != "quit"):
+        try:
+            board.start_stream(45000)
             time.sleep(0.1)
-            inter_data = board.get_board_data()
-            for i in range(len(inter_data[0])):
-                single_frame = [inter_data[c][i] for c in eeg_channels]
-                new_row = [int(time.time() * 10000)]
-                new_row.extend(single_frame)
-                data.append(new_row)
-            if (len(data)) > 1000:
-                write_data(data)
-                data = []
-    except:
-        board.stop_stream()
-        print(f"Writing data to file {len(data)}")
-        write_data(data)
-    finally:
-        board.stop_stream()
+            board.get_board_data()
+
+            while True:
+                time.sleep(0.1)
+                inter_data = board.get_board_data()
+                for i in range(len(inter_data[0])):
+                    single_frame = [inter_data[c][i] for c in eeg_channels]
+                    new_row = [int(time.time() * 10000)]
+                    new_row.extend(single_frame)
+                    data.append(new_row)
+                if (len(data)) > 1000:
+                    write_data(data)
+                    data = []
+        except:
+            print(f"Writing data to file {len(data)}")
+            write_data(data)
+            board.stop_stream()
+            break
+
     
 end_time = 0
 start_time = time.time() * 1000

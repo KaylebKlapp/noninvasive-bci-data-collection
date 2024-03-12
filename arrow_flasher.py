@@ -17,10 +17,10 @@ ARROW_WIDTH = 270
 ARROW_HEIGHT = 175
 
 #Frequencies of arrows, in Hz
-freq_up = 5
-freq_down = 15
-freq_right = 2
-freq_left = 9
+freq_up = 10
+freq_down = 13
+freq_right = 17
+freq_left = 21
 
 up, down, left, right = True, True, True, True
 
@@ -81,15 +81,15 @@ def start_window():
         if (up):
             draw_arrow(screen, color_up, floor(SCREEN_WIDTH/2 - ARROW_HEIGHT/2), 50, 90)
 
-        # Down arrow
+        # # Down arrow
         if(down):
             draw_arrow(screen, color_down, floor(SCREEN_WIDTH/2 - ARROW_HEIGHT/2), SCREEN_HEIGHT - ARROW_WIDTH - 50, 270)
 
-        # left Arrow
+        # # left Arrow
         if(left):
             draw_arrow(screen, color_left, 50, floor(SCREEN_HEIGHT*0.5 - 0.5*ARROW_HEIGHT), 180)
 
-        # Right Arrow
+        # # Right Arrow
         if (right):
             draw_arrow(screen, color_right, SCREEN_WIDTH - ARROW_WIDTH - 50 , floor(SCREEN_HEIGHT*0.5 - 0.5*ARROW_HEIGHT), 0)
 

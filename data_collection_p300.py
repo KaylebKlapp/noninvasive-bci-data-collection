@@ -19,7 +19,6 @@ def write_data(data):
             output += str(c) + ","
         output = output.rstrip(",")
         output += "\n"
-    output = output.rstrip("\n")
 
     with open(f"data/{collect_key}_{name}_{_date_time_}_{__collection_name__}_{0}_{0}.stm", "a") as fp:
         fp.write(output)

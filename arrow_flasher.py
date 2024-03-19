@@ -22,7 +22,7 @@ freq_down = 13
 freq_right = 17
 freq_left = 21
 
-up, down, left, right = True, True, True, True
+up, down, left, right = False, False, False, True
 
 screen_width, screen_height = SCREEN_WIDTH, SCREEN_HEIGHT
 height_markers = [(screen_width / 4) * i for i in range(1,4)]
